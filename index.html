@@ -6,22 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>coke momo</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     body {
-      font-family: 'Boldonse', regular;
+      font-family: 'Helvetica Neue', sans-serif;
       background: white;
       color: #000;
+      margin: 0;
+      padding: 0;
     }
     header {
-      padding: 2rem;
       text-align: center;
-      font-size: 2.5rem;
-      font-weight: 300;
-      letter-spacing: 0.05em;
+      padding: 2rem 1rem;
+    }
+    header img {
+      max-width: 250px;
+      height: auto;
     }
     nav {
       text-align: center;
@@ -34,60 +32,19 @@
       font-weight: 300;
       font-size: 1rem;
     }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-bottom: 4rem;
-    }
-    .gallery img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      pointer-events: none;
-      user-select: none;
-    }
-    .video iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
-      margin-bottom: 4rem;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      padding: 3rem 1rem;
-      color: #666;
-    }
   </style>
-  <script>
-    document.addEventListener('contextmenu', e => e.preventDefault());
-  </script>
 </head>
 <body>
-  <header>coke momo</header>
+  <header>
+    <img src="logo.png" alt="coke momo logo">
+  </header>
   <nav>
-    <a href="#photos">Fotos</a>
-    <a href="#videos">Vídeos</a>
+    <a href="projects/project1.html">Project 1</a>
+    <a href="projects/project2.html">Project 2</a>
+    <a href="projects/project3.html">Project 3</a>
+    <a href="projects/project4.html">Project 4</a>
+    <a href="projects/info.html">Info</a>
+    <a href="projects/contact.html">Contact</a>
   </nav>
-  <div class="container">
-    <section id="photos">
-      <div class="gallery">
-        <img src="DSC06232HDR.jpeg" alt="Placeholder 1">
-        <img src="DSC06223HDR.jpeg" alt="Placeholder 2">
-      </div>
-    </section>
-    <section id="videos" class="video">
-      <iframe src="https://www.youtube.com/embed/dcH8aCIfdjk" allowfullscreen></iframe>
-    </section>
-  </div>
-  <footer>
-    &copy; 2025 coke momo. Todos los derechos reservados.
-  </footer>
 </body>
 </html>
