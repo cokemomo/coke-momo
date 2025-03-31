@@ -3,24 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>coke momo</title>
+  <title>People — coke momo</title>
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
       background: rgb(237, 229, 213);
       color: #000;
-      margin: 0;
-      padding: 0;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-top: 180px;
+      padding-left: 2rem;
+      padding-right: 2rem;
       text-align: center;
     }
 
+    /* Header fijo */
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgb(237, 229, 213);
+      z-index: 1000;
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 1rem 1rem 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     header img {
       max-width: 1000px;
+      width: 80%;
       height: auto;
       cursor: pointer;
     }
@@ -30,7 +42,7 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-top: 1rem;
     }
 
     nav a {
@@ -64,28 +76,26 @@
       text-decoration: underline;
     }
 
-    .index-image {
-      max-width: 600px;
+    img {
+      max-width: 90%;
       height: auto;
-      margin: 2rem auto;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <a href="index.html">
-      <img src="logo.png" alt="coke momo logo">
+    <a href="../index.html">
+      <img src="../logo.png" alt="coke momo logo">
     </a>
+    <nav>
+      <a href="Light.html">Light</a>
+      <a href="places.html">Places</a>
+      <a href="people.html" class="active">People</a>
+      <a href="Bio.html">Bio</a>
+      <a href="contact.html">Contact</a>
+    </nav>
   </header>
-  <nav>
-    <a href="projects/Light.html">Light</a>
-    <a href="projects/places.html">Places</a>
-    <a href="projects/people.html">People</a>
-    <a href="projects/Bio.html">Bio</a>
-    <a href="projects/contact.html">Contact</a>
-  </nav>
-
-  <!-- Imagen principal de la página -->
-  <img src="images/index.jpg" alt="Imagen principal" class="index-image">
+  <img src="../images/PORTRAIT1.jpg" alt="PORTRAIT1">
 </body>
 </html>

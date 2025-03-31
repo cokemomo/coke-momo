@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact — coke momo</title>
+  <title>Places — coke momo</title>
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -75,26 +75,16 @@
       text-decoration: underline;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .places-text {
       margin-top: 2rem;
+      line-height: 1.6;
+      font-size: 1rem;
     }
 
-    input, textarea {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      padding: 0.75rem;
-      font-size: 1rem;
-      background: black;
-      color: white;
-      border: none;
-      cursor: pointer;
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1.5rem;
     }
   </style>
 </head>
@@ -105,19 +95,15 @@
     </a>
     <nav>
       <a href="Light.html">Light</a>
-      <a href="places.html">Places</a>
+      <a href="places.html" class="active">Places</a>
       <a href="people.html">People</a>
       <a href="Bio.html">Bio</a>
-      <a href="contact.html" class="active">Contact</a>
+      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <h1>Contact</h1>
-  <form action="mailto:1franmolina@gmail.com" method="post" enctype="text/plain">
-    <input type="text" name="name" placeholder="Your name" required>
-    <input type="email" name="mail" placeholder="Your email" required>
-    <textarea name="message" rows="5" placeholder="Your message" required></textarea>
-    <button type="submit">Send</button>
-  </form>
+    <img src="../images/PLACES1.jpg" alt="Lugar 1">
+    <img src="../images/places2.jpg" alt="Lugar 2">
+  </div>
 </body>
 </html>
