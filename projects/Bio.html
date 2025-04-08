@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bio — coke momo</title>
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
-      background: rgb(237, 229, 213);
+      background: rgb(255, 255, 255);
       color: #000;
       max-width: 800px;
       margin: 0 auto;
@@ -22,7 +22,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      background: rgb(237, 229, 213);
+      background: rgb(255, 255, 255);
       z-index: 1000;
       text-align: center;
       padding: 1rem 1rem 0.5rem;
@@ -75,10 +75,41 @@
       text-decoration: underline;
     }
 
-    .bio-text {
+    .bio-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
       margin-top: 2rem;
+      flex-direction: column;
+    }
+
+    .bio-photo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .bio-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bio-text {
+      max-width: 400px;
       line-height: 1.6;
       font-size: 1rem;
+      text-align: left;
+    }
+
+    @media (max-width: 600px) {
+      .bio-text {
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -93,16 +124,19 @@
       <a href="people.html">People</a>
       <a href="Bio.html" class="active">Bio</a>
       <a href="contact.html">Contact</a>
+      <a href="Films.html">Films</a>
     </nav>
   </header>
 
   <h1>Bio</h1>
-  <div class="bio-text">
-
-      Space under construction 
-    </p>
-    <p>
-    </p>
+  <div class="bio-section" style="flex-direction: column;">
+    <div class="bio-photo">
+      <img src="../images/bio.jpg" alt="Portrait of Coke Momo">
+    </div>
+    <div class="bio-text" style="text-align: center;">
+      <p>Coke Momo is a visual artist based in Madrid.</p>
+      <p>He explores light, memory and space through analog and digital methods.</p>
+    </div>
   </div>
 </body>
 </html>
