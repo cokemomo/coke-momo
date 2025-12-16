@@ -11,21 +11,28 @@
   <!-- ===== CANONICAL ===== -->
   <link rel="canonical" href="https://www.cokemomo.com/">
 
-  <!-- ===== FAVICON (optional but recommended) =====
-       Put your favicon files in: assets/img/favicon.ico (or pngs if you want)
+  <!-- ===== FAVICONS (ROOT) =====
+       Files placed next to index.html:
+       /favicon.png
+       /favicon-32.png
+       /apple-touch-icon.png
   -->
-  <link rel="icon" href="assets/img/favicon.ico">
-  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.png" sizes="512x512" type="image/png">
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Optional but nice -->
+  <meta name="theme-color" content="#ffffff">
 
   <!-- ===== OPEN GRAPH (WhatsApp / iMessage / Facebook / Telegram) =====
-       Put your OG image here: assets/img/OG.jpg  (or OG.png)
-       IMPORTANT: must be a public absolute URL:
+       Put OG image next to index.html: /OG.png
+       MUST be absolute URL:
   -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.cokemomo.com/">
   <meta property="og:title" content="coke momo">
   <meta property="og:description" content="Visual stories and photography.">
-  <meta property="og:image" content="https://www.cokemomo.com/assets/img/OG.jpg">
+  <meta property="og:image" content="https://www.cokemomo.com/OG.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
@@ -33,7 +40,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="coke momo">
   <meta name="twitter:description" content="Visual stories and photography.">
-  <meta name="twitter:image" content="https://www.cokemomo.com/assets/img/OG.jpg">
+  <meta name="twitter:image" content="https://www.cokemomo.com/OG.png">
 
   <style>
     :root{
@@ -582,7 +589,7 @@
   lightbox.addEventListener('touchend', (e) => {
     if (!touchMoved) return;
     const endX = (e.changedTouches[0] || {}).clientX ?? touchStartX;
-    const endY = (e.changedTouches[0] || {}).clientY ?? touchStartY;
+    const endY = (e.changedTouches[0] || {}).clientX ?? touchStartY;
     const dx = endX - touchStartX;
     const dy = endY - touchStartY;
     const threshold = scale > 1.001 ? 120 : 60;
