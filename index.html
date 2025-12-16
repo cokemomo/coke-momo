@@ -1,92 +1,603 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>coke momo</title>
+
   <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background: rgb(255, 255, 255);
-      color: #000;
-      margin: 0;
-      padding: 0;
-      text-align: center;
+    :root{
+      --bg:#ffffff;
+
+      --page-max: 1400px;
+      --page-pad: 32px;
+
+      --header-border-width: 1px;
+      --header-border-color: rgba(0,0,0,.06);
+      --logo-width: 200px;
+
+      --gap: 32px;
+      --radius: 16px;
+
+      /* ===== AJUSTA AQUÍ BORDE Y SOMBRA ===== */
+      --border: 0px solid rgba(0,0,0,0.30);
+      --shadow: 0 18px 40px rgba(0,0,0,.40);
+
+      --ui-font-size: 13px;
+      --ui-opacity: .75;
+
+      --footer-font-size: 12px;
+      --footer-opacity: .5;
+      --footer-padding: 48px 0 24px;
+
+      --tile-aspect: 4 / 5;
+      --wide-aspect: 16 / 9;
     }
 
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:#111; }
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,
+                   "Helvetica Neue",Helvetica,Arial,sans-serif;
     }
 
-    header img {
-      max-width: 1000px;
-      height: auto;
-      cursor: pointer;
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(8px);
+      border-bottom: var(--header-border-width) solid var(--header-border-color);
     }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
+    .header-inner{
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--page-pad);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
 
-    nav a {
-      text-decoration: none;
-      color: black;
-      font-weight: 300;
-      font-size: 1rem;
+    .logo{
+      width: var(--logo-width);
+      max-width:60vw;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    .menu{
       position: relative;
-      padding: 0.2rem 0;
+      font-size: var(--ui-font-size);
+      opacity: var(--ui-opacity);
     }
 
-    nav a::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 100%;
-      height: 1px;
-      background: black;
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-      transform-origin: left;
+    .menu button{
+      background:none;
+      border:none;
+      font:inherit;
+      cursor:pointer;
+      padding:6px 10px;
     }
 
-    nav a:hover::after {
-      transform: scaleX(1);
+    .menu-list{
+      position:absolute;
+      right:0;
+      top:100%;
+      margin-top:10px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:10px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      display:none;
+      min-width:160px;
+      overflow:hidden;
     }
 
-    nav a.active {
+    .menu.open .menu-list{ display:block; }
+
+    .menu-list button{
+      width:100%;
+      text-align:left;
+      padding:10px 14px;
+      border:none;
+      background:none;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    .menu-list button:hover{
+      background: rgba(0,0,0,.04);
+    }
+
+    main{
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--page-pad);
+      min-height: calc(100vh - 160px);
+    }
+
+    section{ display:none; }
+    section.active{ display:block; }
+
+    /* ===== STORY HEADER ===== */
+    .story-header{ margin-bottom: 32px; }
+    .story-title{
+      font-size: 18px;
       font-weight: 500;
-      text-decoration: underline;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      user-select:none;
     }
 
-    .index-image {
-      max-width: 600px;
-      height: auto;
-      margin: 2rem auto;
+    .home-hero{
+      width:100%;
+      border-radius: var(--radius);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      display:block;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: var(--gap);
+    }
+
+    @media (max-width: 900px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    .tile{
+      position: relative;
+      overflow:hidden;
+      border-radius: var(--radius);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      cursor: zoom-in;
+      background:#fff;
+      aspect-ratio: var(--tile-aspect);
+    }
+
+    .tile.wide{
+      grid-column: span 2;
+      aspect-ratio: var(--wide-aspect);
+    }
+
+    .tile img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    footer{
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--footer-padding);
+      text-align:center;
+      font-size: var(--footer-font-size);
+      opacity: var(--footer-opacity);
+      user-select:none;
+    }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox{
+      position: fixed;
+      inset:0;
+      display:none;
+      z-index:999;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(10px);
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      touch-action: none;
+    }
+
+    .lightbox.open{ display:flex; }
+
+    .lb-ui{
+      position: fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:1000;
+    }
+
+    .lb-btn{
+      pointer-events:auto;
+      position:absolute;
+      top:20px;
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.1);
+      background: rgba(255,255,255,.9);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+
+    .lb-close{ right:20px; font-size:20px; }
+    .lb-prev,.lb-next{
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+    }
+    .lb-prev{ left:18px; }
+    .lb-next{ right:18px; }
+
+    .lightbox-inner{
+      width: min(1200px,96vw);
+      height: min(900px,90vh);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      position: relative;
+    }
+
+    .lb-stage{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border-radius:18px;
+    }
+
+    .lightbox-img{
+      max-width:100%;
+      max-height:100%;
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 30px 80px rgba(0,0,0,.15);
+      background:#fff;
+      transform-origin:center center;
+      cursor: zoom-in;
+      will-change: transform;
+    }
+
+    .lightbox-img.zoomed{ cursor: grab; }
+    .lightbox-img.zoomed:active{ cursor: grabbing; }
+
+    .caption{
+      font-size:14px;
+      opacity:.75;
+      text-align:center;
+      max-width:900px;
+      line-height:1.35;
+      user-select:none;
+    }
+
+    @media (max-width: 600px){
+      :root{
+        --page-pad:18px;
+        --logo-width:160px;
+        --gap:22px;
+        --wide-aspect: 4 / 3;
+      }
+      .tile.wide{ grid-column: span 1; }
+      .lb-prev{ left: 10px; }
+      .lb-next{ right: 10px; }
+      .lb-close{ right: 12px; }
     }
   </style>
 </head>
-<body>
-  <header>
-    <a href="index.html">
-      <img src="logo.png" alt="coke momo logo">
-    </a>
-  </header>
-  <nav>
-    <a href="projects/Light.html">Light</a>
-    <a href="projects/places.html">Places</a>
-    <a href="projects/people.html">People</a>
-    <a href="projects/Bio.html">Bio</a>
-    <a href="projects/contact.html">Contact</a>
-    <a href="projects/Films.html">Films</a>
-  </nav>
 
-  <!-- Imagen principal de la página -->
-  <img src="images/index.jpg" alt="Imagen principal" class="index-image">
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="assets/img/logo.png" class="logo" id="logoHome">
+    <div class="menu" id="menu">
+      <button id="menuToggle">STORIES</button>
+      <div class="menu-list">
+        <button data-target="home">HOME</button>
+        <button data-target="story-01">PSILICON FLESH</button>
+        <button data-target="story-02">HELD IN TIME</button>
+        <button data-target="story-03">PATH</button>
+        <button data-target="story-04">STRINGS</button>
+        <button data-target="story-05">PORTRAITURE</button>
+        <button data-target="story-06">CORE</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="active">
+    <!-- HOME IMAGE -->
+    <img src="assets/img/photos/MAIN.jpg" class="home-hero" alt="coke momo">
+  </section>
+
+  <section id="story-01">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+
+  <section id="story-02">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+
+  <section id="story-03">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+
+  <section id="story-04">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+
+  <section id="story-05">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+
+  <section id="story-06">
+    <div class="story-header"><div class="story-title"></div></div>
+    <div class="grid"></div>
+  </section>
+</main>
+
+<footer>© coke momo · 2026</footer>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lb-ui">
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Cerrar">×</button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Anterior">‹</button>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Siguiente">›</button>
+  </div>
+
+  <div class="lightbox-inner">
+    <div class="lb-stage" id="lbStage">
+      <img class="lightbox-img" id="lbImg" alt="">
+    </div>
+    <div class="caption" id="lbCaption"></div>
+  </div>
+</div>
+
+<script>
+  const MAX_PHOTOS = 40;
+  const EXT = '.jpg';
+  const WIDE_RATIO = 1.1;
+
+  // 2º click ≈ 70%
+  const ZOOM_LEVELS = [1, 1.7, 2.5];
+  const ZOOM_MIN = 1;
+  const ZOOM_MAX = 3;
+
+  let captions = {};
+  let currentList = [];
+  let currentIndex = -1;
+
+  let scale = 1;
+  let panX = 0;
+  let panY = 0;
+  let dragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let panStartX = 0;
+  let panStartY = 0;
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchMoved = false;
+
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCaption = document.getElementById('lbCaption');
+
+  function setActiveSection(id){
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome(){
+    setActiveSection('home');
+  }
+
+  async function loadStory(storyId){
+    const section = document.getElementById(storyId);
+    const grid = section.querySelector('.grid');
+    const titleEl = section.querySelector('.story-title');
+
+    const btn = document.querySelector(`.menu-list button[data-target="${storyId}"]`);
+    titleEl.textContent = btn ? btn.textContent : '';
+
+    grid.innerHTML = '';
+    captions = {};
+    currentList = [];
+
+    const base = `assets/img/stories/${storyId}/`;
+
+    try{
+      const r = await fetch(base + 'captions.json', { cache:'no-store' });
+      if (r.ok) captions = await r.json();
+    }catch(e){}
+
+    for(let i=1;i<=MAX_PHOTOS;i++){
+      const name = `PHOTO-${i}${EXT}`;
+      const src = base + name;
+
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      img.draggable = false;
+
+      img.addEventListener('load', () => {
+        if (img.naturalWidth / img.naturalHeight > WIDE_RATIO){
+          tile.classList.add('wide');
+        }
+        currentList.push({ src, name, caption: captions[name] || '' });
+      });
+
+      img.addEventListener('error', () => tile.remove());
+
+      tile.addEventListener('click', () => {
+        const idx = currentList.findIndex(x => x.name === name);
+        openLightbox(idx >= 0 ? idx : 0);
+      });
+
+      tile.appendChild(img);
+      grid.appendChild(tile);
+    }
+  }
+
+  function applyTransform(){
+    lbImg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    lbImg.classList.toggle('zoomed', scale > 1.001);
+  }
+
+  function resetZoom(){
+    scale = 1; panX = 0; panY = 0;
+    applyTransform();
+  }
+
+  function openLightbox(index){
+    if (!currentList.length) return;
+    currentIndex = (index + currentList.length) % currentList.length;
+
+    const item = currentList[currentIndex];
+    lbImg.src = item.src;
+    lbCaption.textContent = item.caption || '';
+    resetZoom();
+
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden','true');
+    lbImg.src = '';
+    lbCaption.textContent = '';
+    resetZoom();
+    document.body.style.overflow = '';
+  }
+
+  function next(){ openLightbox(currentIndex + 1); }
+  function prev(){ openLightbox(currentIndex - 1); }
+
+  // zoom cycle on click
+  let zoomLevelIdx = 0;
+  function cycleZoom(){
+    zoomLevelIdx = (zoomLevelIdx + 1) % ZOOM_LEVELS.length;
+    scale = ZOOM_LEVELS[zoomLevelIdx];
+    if (scale <= 1.001){ panX = 0; panY = 0; }
+    applyTransform();
+  }
+  lbImg.addEventListener('click', (e) => { if (!dragging) cycleZoom(); });
+
+  // drag pan
+  lbImg.addEventListener('pointerdown', (e) => {
+    if (scale <= 1.001) return;
+    dragging = true;
+    lbImg.setPointerCapture(e.pointerId);
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    panStartX = panX;
+    panStartY = panY;
+  });
+
+  lbImg.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    panX = panStartX + (e.clientX - dragStartX);
+    panY = panStartY + (e.clientY - dragStartY);
+    applyTransform();
+  });
+
+  lbImg.addEventListener('pointerup', () => { dragging = false; });
+  lbImg.addEventListener('pointercancel', () => { dragging = false; });
+
+  // wheel zoom
+  lightbox.addEventListener('wheel', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    e.preventDefault();
+    const factor = (-e.deltaY) > 0 ? 1.08 : 0.92;
+    scale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, scale * factor));
+    if (scale <= 1.001){ panX = 0; panY = 0; zoomLevelIdx = 0; }
+    applyTransform();
+  }, { passive:false });
+
+  // swipe
+  lightbox.addEventListener('touchstart', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.touches.length !== 1) return;
+    touchMoved = false;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive:true });
+
+  lightbox.addEventListener('touchmove', () => { touchMoved = true; }, { passive:true });
+
+  lightbox.addEventListener('touchend', (e) => {
+    if (!touchMoved) return;
+    const endX = (e.changedTouches[0] || {}).clientX ?? touchStartX;
+    const endY = (e.changedTouches[0] || {}).clientY ?? touchStartY;
+    const dx = endX - touchStartX;
+    const dy = endY - touchStartY;
+    const threshold = scale > 1.001 ? 120 : 60;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold){
+      if (dx < 0) next(); else prev();
+    }
+  }, { passive:true });
+
+  // UI buttons (flechas)
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbNext').addEventListener('click', next);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+
+  // close on background click
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+  // keyboard arrows
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  // menu
+  const menu = document.getElementById('menu');
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target)) menu.classList.remove('open');
+  });
+  document.querySelectorAll('.menu-list button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.target;
+      menu.classList.remove('open');
+      setActiveSection(id);
+      if (id.startsWith('story')) await loadStory(id);
+      else goHome();
+    });
+  });
+
+  // logo home
+  document.getElementById('logoHome').addEventListener('click', goHome);
+</script>
+
 </body>
 </html>
