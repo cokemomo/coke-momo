@@ -161,12 +161,26 @@
 
     /* ===== STORY HEADER ===== */
     .story-header{ margin-bottom: 32px; }
+    .story-title-row{
+      display:flex;
+      align-items: baseline;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
     .story-title{
       font-size: 18px;
       font-weight: 500;
       letter-spacing: .04em;
       text-transform: uppercase;
       user-select:none;
+    }
+    .story-subtitle{
+      font-size: 15px;
+      font-weight: 400;
+      font-style: italic;
+      opacity: .78;
+      user-select:none;
+      white-space: nowrap;
     }
 
     .home-hero{
@@ -328,6 +342,7 @@
       .lb-prev{ left: 10px; }
       .lb-next{ right: 10px; }
       .lb-close{ right: 12px; }
+      .story-subtitle{ white-space: normal; }
     }
   </style>
 </head>
@@ -359,32 +374,62 @@
   </section>
 
   <section id="story-01">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 
   <section id="story-02">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 
   <section id="story-03">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 
   <section id="story-04">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 
   <section id="story-05">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 
   <section id="story-06">
-    <div class="story-header"><div class="story-title"></div></div>
+    <div class="story-header">
+      <div class="story-title-row">
+        <div class="story-title"></div>
+        <div class="story-subtitle"></div>
+      </div>
+    </div>
     <div class="grid"></div>
   </section>
 </main>
@@ -437,6 +482,19 @@
   const lbImg = document.getElementById('lbImg');
   const lbCaption = document.getElementById('lbCaption');
 
+  /* ================================
+     CAMBIA AQUÍ LAS DESCRIPCIONES
+     (placeholder 10 palabras ahora)
+  ================================== */
+  const STORY_DESCRIPTIONS = {
+    "story-01": "Band Press Photos.",
+    "story-02": "The process of the unique.",
+    "story-03": "Images from the path itself.",
+    "story-04": "People around.",
+    "story-05": "Studio lighting.",
+    "story-06": "What moves us."
+  };
+
   function setActiveSection(id){
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -450,9 +508,13 @@
     const section = document.getElementById(storyId);
     const grid = section.querySelector('.grid');
     const titleEl = section.querySelector('.story-title');
+    const subtitleEl = section.querySelector('.story-subtitle');
 
     const btn = document.querySelector(`.menu-list button[data-target="${storyId}"]`);
     titleEl.textContent = btn ? btn.textContent : '';
+
+    const desc = STORY_DESCRIPTIONS[storyId] || "Ten small moments, quiet light, everyday gestures, held together gently.";
+    subtitleEl.textContent = " / " + desc;
 
     grid.innerHTML = '';
     captions = {};
@@ -589,7 +651,7 @@
   lightbox.addEventListener('touchend', (e) => {
     if (!touchMoved) return;
     const endX = (e.changedTouches[0] || {}).clientX ?? touchStartX;
-    const endY = (e.changedTouches[0] || {}).clientX ?? touchStartY;
+    const endY = (e.changedTouches[0] || {}).clientY ?? touchStartY;
     const dx = endX - touchStartX;
     const dy = endY - touchStartY;
     const threshold = scale > 1.001 ? 120 : 60;
