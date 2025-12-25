@@ -53,13 +53,7 @@
         overflow-x: hidden; 
         cursor: default;
     }
-    
-    /* REGLA IMPORTANTE: Pointer events auto en imágenes para evitar bloqueos raros, 
-       aunque user-drag lo quitamos */
-    img { 
-        -webkit-user-drag: none; user-drag: none; 
-        max-width: 100%; display: block;
-    }
+    img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
 
     body{
       font-family:-apple-system,BlinkMacSystemFont, "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -116,14 +110,14 @@
     .story-title{ font-size: 18px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; user-select:none; }
     .story-subtitle{ font-size: 15px; font-weight: 400; font-style: italic; opacity: .78; user-select:none; white-space: nowrap; }
 
-    /* ===== PORTADA ===== */
+    /* ===== PORTADA (MODIFICADA PARA SUBIR POSICIÓN) ===== */
     .home-hero{
-      /* Configuración por defecto (Desktop) */
       width: 100vw; position: relative; left: 50%; right: 50%;
       margin-left: -50vw; margin-right: -50vw;
       display:block; object-fit: cover; box-shadow: var(--shadow);
+      
+      /* ESTA ES LA LÍNEA QUE SUBE LA FOTO */
       margin-top: -32px; 
-      pointer-events: none; /* No click en portada */
     }
 
     .grid{ display:grid; grid-template-columns: repeat(2,1fr); gap: var(--gap); }
@@ -132,29 +126,14 @@
     .tile{
       position: relative; overflow:hidden; border-radius: var(--radius);
       border: var(--border); box-shadow: var(--shadow); 
-      cursor: none; 
-      background:#f0f0f0; /* Color gris suave por si la foto tarda en cargar */
-      aspect-ratio: var(--tile-aspect); 
-      pointer-events: auto;
-      /* Hack para navegadores viejos que no soportan aspect-ratio */
-      min-height: 1px; 
+      cursor: none; /* Custom cursor */
+      background:#fff; aspect-ratio: var(--tile-aspect); pointer-events: auto;
     }
-    
-    /* Fallback de altura para móviles antiguos */
-    @supports not (aspect-ratio: 4 / 5) {
-      .tile::before { content: ""; display: block; padding-top: 125%; }
-    }
-
     .tile.wide{ grid-column: span 2; aspect-ratio: var(--wide-aspect); }
-    @supports not (aspect-ratio: 16 / 9) {
-      .tile.wide::before { padding-top: 56.25%; }
-    }
 
     .tile img{
-      /* Posicionamiento más seguro que inset:0 */
-      position:absolute; top:0; left:0; width:100%; height:100%;
+      position:absolute; inset:0; width:100%; height:100%;
       object-fit: cover; display:block; user-select:none;
-      pointer-events: none; /* Click atraviesa al .tile */
     }
 
     footer{
@@ -169,7 +148,7 @@
       display:none; z-index: 4000; background: #ffffff;
       align-items: center; justify-content: center;
       touch-action: none; overflow: hidden;
-      cursor: none; 
+      cursor: none; /* Custom cursor */
     }
 
     .lightbox.open{ display:flex; }
@@ -189,7 +168,7 @@
     
     .lb-protection {
       position: absolute; inset: 0; z-index: 4050; 
-      cursor: none; 
+      cursor: none; /* Custom cursor handler */
     }
 
     .caption{
@@ -221,49 +200,12 @@
     
     .cursor-msg.visible { opacity: 1; }
 
-    /* =========================================
-       ARREGLOS ESPECÍFICOS PARA MÓVIL
-       ========================================= */
     @media (max-width: 600px){
       :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
       .cursor-msg { display: none; }
-      
-      /* ARREGLO PORTADA MÓVIL: Evita el width:100vw que a veces rompe */
-      .home-hero { 
-         width: calc(100% + 36px); /* Compensamos el padding de 18px a cada lado */
-         margin-left: -18px; 
-         margin-right: -18px;
-         left: auto; right: auto;
-         margin-top: -18px;
-         max-width: none;
-      }
-    }
-
-    @media (max-width: 900px) {
-        /* LIGHTBOX SCROLLABLE */
-        .lightbox {
-            display: block; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            touch-action: auto;
-            padding: 0;
-        }
-        .lightbox-inner {
-            height: auto; min-height: 100%; overflow: visible; display: block;
-        }
-        .lb-stage {
-            display: block; height: auto; padding: 20px; padding-bottom: 80px;
-        }
-        .lightbox-img {
-            transform: none !important;
-            width: 100%; max-width: 100%; height: auto !important;
-            margin: 0 auto; display: block; pointer-events: auto;
-        }
-        .lb-protection { display: none !important; }
-        .lightbox.direct-zoom .caption { 
-            display: block !important; position: relative; bottom: auto; margin-top: 15px; background: transparent;
-        }
+      /* Ajuste para móvil: sube menos porque el padding es menor */
+      .home-hero { margin-top: -18px; } 
     }
   </style>
 </head>
@@ -365,16 +307,15 @@
     "story-06": "What moves us."
   };
 
+  // ===== GESTIÓN DEL CURSOR PERSONALIZADO =====
   document.addEventListener('mousemove', (e) => {
     cursorMsg.style.left = e.clientX + 'px';
     cursorMsg.style.top = e.clientY + 'px';
   });
 
   function showCursorMsg(text) {
-    if (window.innerWidth > 900) { // Solo mostrar mensaje en desktop
-        cursorMsg.textContent = text;
-        cursorMsg.classList.add('visible');
-    }
+    cursorMsg.textContent = text;
+    cursorMsg.classList.add('visible');
   }
   function hideCursorMsg() {
     cursorMsg.classList.remove('visible');
@@ -417,8 +358,6 @@
       const tile = document.createElement('div');
       tile.className = 'tile';
       const img = document.createElement('img');
-      // Importante: Quitamos lazy loading en móvil si da problemas, 
-      // pero por rendimiento lo dejamos por defecto.
       img.src = src; img.loading = 'lazy'; img.alt = '';
       
       tile.addEventListener('mouseenter', () => showCursorMsg('CLICK TO ZOOM'));
@@ -451,10 +390,8 @@
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
 
-    if (window.innerWidth > 900) {
-      const hOffset = getHeaderHeight();
-      requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
-    }
+    const hOffset = getHeaderHeight();
+    requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
   }
 
   function closeLightbox(){
@@ -466,7 +403,6 @@
   }
 
   function updatePan(mouseX, mouseY){
-    if (window.innerWidth <= 900) return;
     if (!lbImg.naturalWidth) return;
 
     const hOffset = getHeaderHeight();
