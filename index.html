@@ -53,7 +53,13 @@
         overflow-x: hidden; 
         cursor: default;
     }
-    img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
+    
+    /* REGLA IMPORTANTE: Pointer events auto en imágenes para evitar bloqueos raros, 
+       aunque user-drag lo quitamos */
+    img { 
+        -webkit-user-drag: none; user-drag: none; 
+        max-width: 100%; display: block;
+    }
 
     body{
       font-family:-apple-system,BlinkMacSystemFont, "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -112,10 +118,12 @@
 
     /* ===== PORTADA ===== */
     .home-hero{
+      /* Configuración por defecto (Desktop) */
       width: 100vw; position: relative; left: 50%; right: 50%;
       margin-left: -50vw; margin-right: -50vw;
       display:block; object-fit: cover; box-shadow: var(--shadow);
       margin-top: -32px; 
+      pointer-events: none; /* No click en portada */
     }
 
     .grid{ display:grid; grid-template-columns: repeat(2,1fr); gap: var(--gap); }
@@ -125,13 +133,28 @@
       position: relative; overflow:hidden; border-radius: var(--radius);
       border: var(--border); box-shadow: var(--shadow); 
       cursor: none; 
-      background:#fff; aspect-ratio: var(--tile-aspect); pointer-events: auto;
+      background:#f0f0f0; /* Color gris suave por si la foto tarda en cargar */
+      aspect-ratio: var(--tile-aspect); 
+      pointer-events: auto;
+      /* Hack para navegadores viejos que no soportan aspect-ratio */
+      min-height: 1px; 
     }
+    
+    /* Fallback de altura para móviles antiguos */
+    @supports not (aspect-ratio: 4 / 5) {
+      .tile::before { content: ""; display: block; padding-top: 125%; }
+    }
+
     .tile.wide{ grid-column: span 2; aspect-ratio: var(--wide-aspect); }
+    @supports not (aspect-ratio: 16 / 9) {
+      .tile.wide::before { padding-top: 56.25%; }
+    }
 
     .tile img{
-      position:absolute; inset:0; width:100%; height:100%;
+      /* Posicionamiento más seguro que inset:0 */
+      position:absolute; top:0; left:0; width:100%; height:100%;
       object-fit: cover; display:block; user-select:none;
+      pointer-events: none; /* Click atraviesa al .tile */
     }
 
     footer{
@@ -153,7 +176,6 @@
 
     .lb-ui{ position: absolute; inset:0; pointer-events:none; z-index:4100; }
     .lightbox.direct-zoom .lb-btn { display: none; }
-    /* Ocultamos caption en desktop zoom, pero en movil lo arreglaremos abajo */
     .lightbox.direct-zoom .caption { display: none; }
 
     .lightbox-inner{ width: 100%; height: 100%; position: relative; overflow: hidden; }
@@ -199,62 +221,48 @@
     
     .cursor-msg.visible { opacity: 1; }
 
+    /* =========================================
+       ARREGLOS ESPECÍFICOS PARA MÓVIL
+       ========================================= */
     @media (max-width: 600px){
       :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
       .cursor-msg { display: none; }
-      .home-hero { margin-top: -18px; } 
+      
+      /* ARREGLO PORTADA MÓVIL: Evita el width:100vw que a veces rompe */
+      .home-hero { 
+         width: calc(100% + 36px); /* Compensamos el padding de 18px a cada lado */
+         margin-left: -18px; 
+         margin-right: -18px;
+         left: auto; right: auto;
+         margin-top: -18px;
+         max-width: none;
+      }
     }
 
-    /* =========================================
-       ARREGLO PARA SCROLL EN MÓVIL
-       ========================================= */
     @media (max-width: 900px) {
+        /* LIGHTBOX SCROLLABLE */
         .lightbox {
-            /* Permitir scroll nativo */
             display: block; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
             touch-action: auto;
             padding: 0;
         }
-
         .lightbox-inner {
-            height: auto;
-            min-height: 100%;
-            overflow: visible;
-            display: block;
+            height: auto; min-height: 100%; overflow: visible; display: block;
         }
-        
         .lb-stage {
-            display: block;
-            height: auto;
-            padding: 20px;
-            padding-bottom: 80px; /* Espacio extra abajo */
+            display: block; height: auto; padding: 20px; padding-bottom: 80px;
         }
-
         .lightbox-img {
-            /* Anular el zoom de JS */
             transform: none !important;
-            width: 100%;
-            max-width: 100%;
-            height: auto !important;
-            max-height: none !important;
-            margin: 0 auto;
-            display: block;
-            pointer-events: auto; /* Permitir tocar la imagen */
+            width: 100%; max-width: 100%; height: auto !important;
+            margin: 0 auto; display: block; pointer-events: auto;
         }
-
-        /* Quitamos la capa de protección para que no bloquee el dedo */
         .lb-protection { display: none !important; }
-
-        /* Mostrar el caption debajo de la foto */
         .lightbox.direct-zoom .caption { 
-            display: block !important; 
-            position: relative;
-            bottom: auto;
-            margin-top: 15px;
-            background: transparent;
+            display: block !important; position: relative; bottom: auto; margin-top: 15px; background: transparent;
         }
     }
   </style>
@@ -357,15 +365,16 @@
     "story-06": "What moves us."
   };
 
-  // ===== GESTIÓN DEL CURSOR PERSONALIZADO =====
   document.addEventListener('mousemove', (e) => {
     cursorMsg.style.left = e.clientX + 'px';
     cursorMsg.style.top = e.clientY + 'px';
   });
 
   function showCursorMsg(text) {
-    cursorMsg.textContent = text;
-    cursorMsg.classList.add('visible');
+    if (window.innerWidth > 900) { // Solo mostrar mensaje en desktop
+        cursorMsg.textContent = text;
+        cursorMsg.classList.add('visible');
+    }
   }
   function hideCursorMsg() {
     cursorMsg.classList.remove('visible');
@@ -408,6 +417,8 @@
       const tile = document.createElement('div');
       tile.className = 'tile';
       const img = document.createElement('img');
+      // Importante: Quitamos lazy loading en móvil si da problemas, 
+      // pero por rendimiento lo dejamos por defecto.
       img.src = src; img.loading = 'lazy'; img.alt = '';
       
       tile.addEventListener('mouseenter', () => showCursorMsg('CLICK TO ZOOM'));
@@ -440,7 +451,6 @@
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
 
-    // Solo ejecutamos pan si la ventana es grande (Desktop)
     if (window.innerWidth > 900) {
       const hOffset = getHeaderHeight();
       requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
@@ -456,9 +466,7 @@
   }
 
   function updatePan(mouseX, mouseY){
-    // Si estamos en móvil, no calculamos nada
     if (window.innerWidth <= 900) return;
-
     if (!lbImg.naturalWidth) return;
 
     const hOffset = getHeaderHeight();
