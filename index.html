@@ -12,7 +12,7 @@
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#ffffff">
- 
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.cokemomo.com/">
   <meta property="og:title" content="coke momo">
@@ -110,13 +110,11 @@
     .story-title{ font-size: 18px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; user-select:none; }
     .story-subtitle{ font-size: 15px; font-weight: 400; font-style: italic; opacity: .78; user-select:none; white-space: nowrap; }
 
-    /* ===== PORTADA (MODIFICADA PARA SUBIR POSICIÓN) ===== */
+    /* ===== PORTADA ===== */
     .home-hero{
       width: 100vw; position: relative; left: 50%; right: 50%;
       margin-left: -50vw; margin-right: -50vw;
       display:block; object-fit: cover; box-shadow: var(--shadow);
-      
-      /* ESTA ES LA LÍNEA QUE SUBE LA FOTO */
       margin-top: -32px; 
     }
 
@@ -126,7 +124,7 @@
     .tile{
       position: relative; overflow:hidden; border-radius: var(--radius);
       border: var(--border); box-shadow: var(--shadow); 
-      cursor: none; /* Custom cursor */
+      cursor: none; 
       background:#fff; aspect-ratio: var(--tile-aspect); pointer-events: auto;
     }
     .tile.wide{ grid-column: span 2; aspect-ratio: var(--wide-aspect); }
@@ -148,13 +146,14 @@
       display:none; z-index: 4000; background: #ffffff;
       align-items: center; justify-content: center;
       touch-action: none; overflow: hidden;
-      cursor: none; /* Custom cursor */
+      cursor: none; 
     }
 
     .lightbox.open{ display:flex; }
 
     .lb-ui{ position: absolute; inset:0; pointer-events:none; z-index:4100; }
     .lightbox.direct-zoom .lb-btn { display: none; }
+    /* Ocultamos caption en desktop zoom, pero en movil lo arreglaremos abajo */
     .lightbox.direct-zoom .caption { display: none; }
 
     .lightbox-inner{ width: 100%; height: 100%; position: relative; overflow: hidden; }
@@ -168,7 +167,7 @@
     
     .lb-protection {
       position: absolute; inset: 0; z-index: 4050; 
-      cursor: none; /* Custom cursor handler */
+      cursor: none; 
     }
 
     .caption{
@@ -204,8 +203,59 @@
       :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
       .cursor-msg { display: none; }
-      /* Ajuste para móvil: sube menos porque el padding es menor */
       .home-hero { margin-top: -18px; } 
+    }
+
+    /* =========================================
+       ARREGLO PARA SCROLL EN MÓVIL
+       ========================================= */
+    @media (max-width: 900px) {
+        .lightbox {
+            /* Permitir scroll nativo */
+            display: block; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            touch-action: auto;
+            padding: 0;
+        }
+
+        .lightbox-inner {
+            height: auto;
+            min-height: 100%;
+            overflow: visible;
+            display: block;
+        }
+        
+        .lb-stage {
+            display: block;
+            height: auto;
+            padding: 20px;
+            padding-bottom: 80px; /* Espacio extra abajo */
+        }
+
+        .lightbox-img {
+            /* Anular el zoom de JS */
+            transform: none !important;
+            width: 100%;
+            max-width: 100%;
+            height: auto !important;
+            max-height: none !important;
+            margin: 0 auto;
+            display: block;
+            pointer-events: auto; /* Permitir tocar la imagen */
+        }
+
+        /* Quitamos la capa de protección para que no bloquee el dedo */
+        .lb-protection { display: none !important; }
+
+        /* Mostrar el caption debajo de la foto */
+        .lightbox.direct-zoom .caption { 
+            display: block !important; 
+            position: relative;
+            bottom: auto;
+            margin-top: 15px;
+            background: transparent;
+        }
     }
   </style>
 </head>
@@ -390,8 +440,11 @@
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
 
-    const hOffset = getHeaderHeight();
-    requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
+    // Solo ejecutamos pan si la ventana es grande (Desktop)
+    if (window.innerWidth > 900) {
+      const hOffset = getHeaderHeight();
+      requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
+    }
   }
 
   function closeLightbox(){
@@ -403,6 +456,9 @@
   }
 
   function updatePan(mouseX, mouseY){
+    // Si estamos en móvil, no calculamos nada
+    if (window.innerWidth <= 900) return;
+
     if (!lbImg.naturalWidth) return;
 
     const hOffset = getHeaderHeight();
