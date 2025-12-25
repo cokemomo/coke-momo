@@ -4,350 +4,215 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <!-- ===== TITLE + BASIC META ===== -->
   <title>coke momo</title>
   <meta name="description" content="Visual stories and photography by coke momo.">
-
-  <!-- ===== CANONICAL ===== -->
   <link rel="canonical" href="https://www.cokemomo.com/">
 
-  <!-- ===== FAVICONS (ROOT) =====
-       Files placed next to index.html:
-       /favicon.png
-       /favicon-32.png
-       /apple-touch-icon.png
-  -->
   <link rel="icon" href="/favicon.png" sizes="512x512" type="image/png">
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-  <!-- Optional but nice -->
   <meta name="theme-color" content="#ffffff">
 
-  <!-- ===== OPEN GRAPH (WhatsApp / iMessage / Facebook / Telegram) =====
-       Put OG image next to index.html: /OG.png
-       MUST be absolute URL:
-  -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.cokemomo.com/">
   <meta property="og:title" content="coke momo">
   <meta property="og:description" content="Visual stories and photography.">
   <meta property="og:image" content="https://www.cokemomo.com/OG.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <!-- ===== TWITTER (also used by many apps) ===== -->
+  
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="coke momo">
-  <meta name="twitter:description" content="Visual stories and photography.">
   <meta name="twitter:image" content="https://www.cokemomo.com/OG.png">
 
   <style>
     :root{
       --bg:#ffffff;
-
       --page-max: 1400px;
       --page-pad: 32px;
-
+      --header-height: 100px; 
       --header-border-width: 1px;
       --header-border-color: rgba(0,0,0,.06);
       --logo-width: 200px;
-
       --gap: 32px;
       --radius: 16px;
-
-      /* ===== AJUSTA AQUÍ BORDE Y SOMBRA ===== */
       --border: 0px solid rgba(0,0,0,0.30);
       --shadow: 0 18px 40px rgba(0,0,0,.40);
-
       --ui-font-size: 13px;
       --ui-opacity: .75;
-
       --footer-font-size: 12px;
       --footer-opacity: .5;
       --footer-padding: 48px 0 24px;
-
       --tile-aspect: 4 / 5;
       --wide-aspect: 16 / 9;
     }
 
     *{ box-sizing:border-box; }
-    html,body{ margin:0; padding:0; background:var(--bg); color:#111; }
+    
+    html,body{ 
+        margin:0; padding:0; background:var(--bg); color:#111; 
+        -webkit-user-select: none; user-select: none;
+        overflow-x: hidden; 
+        cursor: default;
+    }
+    img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
 
     body{
-      font-family:-apple-system,BlinkMacSystemFont,
-                   "Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont, "Helvetica Neue",Helvetica,Arial,sans-serif;
     }
 
+    /* ===== HEADER FIJO ===== */
     header{
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255,255,255,.94);
+      position: fixed; 
+      top: 0; left: 0; width: 100%; height: var(--header-height);
+      z-index: 5000;
+      background: rgba(255,255,255,.98);
       backdrop-filter: blur(8px);
       border-bottom: var(--header-border-width) solid var(--header-border-color);
+      display: flex; align-items: center;
     }
 
     .header-inner{
-      max-width: var(--page-max);
-      margin: 0 auto;
-      padding: var(--page-pad);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      width: 100%; max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad);
+      display:flex; align-items:center; justify-content:space-between; height: 100%;
     }
 
     .logo{
-      width: var(--logo-width);
-      max-width:60vw;
-      cursor:pointer;
-      user-select:none;
-      -webkit-user-drag:none;
+      width: var(--logo-width); max-width:60vw; cursor:pointer; user-select:none; pointer-events: auto; 
     }
 
-    .menu{
-      position: relative;
-      font-size: var(--ui-font-size);
-      opacity: var(--ui-opacity);
-    }
-
-    .menu button{
-      background:none;
-      border:none;
-      font:inherit;
-      cursor:pointer;
-      padding:6px 10px;
-    }
+    .menu{ position: relative; font-size: var(--ui-font-size); opacity: var(--ui-opacity); }
+    .menu button{ background:none; border:none; font:inherit; cursor:pointer; padding:6px 10px; }
 
     .menu-list{
-      position:absolute;
-      right:0;
-      top:100%;
-      margin-top:10px;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:10px;
-      box-shadow:0 12px 30px rgba(0,0,0,.08);
-      display:none;
-      min-width:160px;
-      overflow:hidden;
+      position:absolute; right:0; top:100%; margin-top:10px;
+      background:#fff; border:1px solid rgba(0,0,0,.08);
+      border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.08);
+      display:none; min-width:160px; overflow:hidden;
     }
-
     .menu.open .menu-list{ display:block; }
 
     .menu-list button{
-      width:100%;
-      text-align:left;
-      padding:10px 14px;
-      border:none;
-      background:none;
-      cursor:pointer;
-      font-size:13px;
+      width:100%; text-align:left; padding:10px 14px; border:none;
+      background:none; cursor:pointer; font-size:13px;
     }
-
-    .menu-list button:hover{
-      background: rgba(0,0,0,.04);
-    }
+    .menu-list button:hover{ background: rgba(0,0,0,.04); }
 
     main{
-      max-width: var(--page-max);
-      margin: 0 auto;
-      padding: var(--page-pad);
-      min-height: calc(100vh - 160px);
+      max-width: var(--page-max); margin: 0 auto; padding: var(--page-pad);
+      margin-top: var(--header-height); 
+      min-height: calc(100vh - var(--header-height));
     }
 
     section{ display:none; }
     section.active{ display:block; }
 
-    /* ===== STORY HEADER ===== */
     .story-header{ margin-bottom: 32px; }
-    .story-title-row{
-      display:flex;
-      align-items: baseline;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-    .story-title{
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      user-select:none;
-    }
-    .story-subtitle{
-      font-size: 15px;
-      font-weight: 400;
-      font-style: italic;
-      opacity: .78;
-      user-select:none;
-      white-space: nowrap;
-    }
+    .story-title-row{ display:flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
+    .story-title{ font-size: 18px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; user-select:none; }
+    .story-subtitle{ font-size: 15px; font-weight: 400; font-style: italic; opacity: .78; user-select:none; white-space: nowrap; }
 
+    /* ===== PORTADA (MODIFICADA PARA SUBIR POSICIÓN) ===== */
     .home-hero{
-      width:100%;
-      border-radius: var(--radius);
-      border: var(--border);
-      box-shadow: var(--shadow);
-      display:block;
+      width: 100vw; position: relative; left: 50%; right: 50%;
+      margin-left: -50vw; margin-right: -50vw;
+      display:block; object-fit: cover; box-shadow: var(--shadow);
+      
+      /* ESTA ES LA LÍNEA QUE SUBE LA FOTO */
+      margin-top: -32px; 
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: var(--gap);
-    }
-
-    @media (max-width: 900px){
-      .grid{ grid-template-columns:1fr; }
-    }
+    .grid{ display:grid; grid-template-columns: repeat(2,1fr); gap: var(--gap); }
+    @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
 
     .tile{
-      position: relative;
-      overflow:hidden;
-      border-radius: var(--radius);
-      border: var(--border);
-      box-shadow: var(--shadow);
-      cursor: zoom-in;
-      background:#fff;
-      aspect-ratio: var(--tile-aspect);
+      position: relative; overflow:hidden; border-radius: var(--radius);
+      border: var(--border); box-shadow: var(--shadow); 
+      cursor: none; /* Custom cursor */
+      background:#fff; aspect-ratio: var(--tile-aspect); pointer-events: auto;
     }
-
-    .tile.wide{
-      grid-column: span 2;
-      aspect-ratio: var(--wide-aspect);
-    }
+    .tile.wide{ grid-column: span 2; aspect-ratio: var(--wide-aspect); }
 
     .tile img{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-      user-select:none;
-      -webkit-user-drag:none;
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit: cover; display:block; user-select:none;
     }
 
     footer{
-      max-width: var(--page-max);
-      margin: 0 auto;
-      padding: var(--footer-padding);
-      text-align:center;
-      font-size: var(--footer-font-size);
-      opacity: var(--footer-opacity);
-      user-select:none;
+      max-width: var(--page-max); margin: 0 auto; padding: var(--footer-padding);
+      text-align:center; font-size: var(--footer-font-size); opacity: var(--footer-opacity); user-select:none;
     }
 
     /* ===== LIGHTBOX ===== */
     .lightbox{
-      position: fixed;
-      inset:0;
-      display:none;
-      z-index:999;
-      background: rgba(255,255,255,.94);
-      backdrop-filter: blur(10px);
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-      touch-action: none;
+      position: fixed; top: var(--header-height); left: 0; width: 100%;
+      height: calc(100vh - var(--header-height)); 
+      display:none; z-index: 4000; background: #ffffff;
+      align-items: center; justify-content: center;
+      touch-action: none; overflow: hidden;
+      cursor: none; /* Custom cursor */
     }
 
     .lightbox.open{ display:flex; }
 
-    .lb-ui{
-      position: fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:1000;
-    }
+    .lb-ui{ position: absolute; inset:0; pointer-events:none; z-index:4100; }
+    .lightbox.direct-zoom .lb-btn { display: none; }
+    .lightbox.direct-zoom .caption { display: none; }
 
-    .lb-btn{
-      pointer-events:auto;
-      position:absolute;
-      top:20px;
-      width:44px;
-      height:44px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.1);
-      background: rgba(255,255,255,.9);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      user-select:none;
-    }
-
-    .lb-close{ right:20px; font-size:20px; }
-    .lb-prev,.lb-next{
-      top:50%;
-      transform:translateY(-50%);
-      font-size:18px;
-    }
-    .lb-prev{ left:18px; }
-    .lb-next{ right:18px; }
-
-    .lightbox-inner{
-      width: min(1200px,96vw);
-      height: min(900px,90vh);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:14px;
-      position: relative;
-    }
-
-    .lb-stage{
-      width:100%;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      border-radius:18px;
-    }
+    .lightbox-inner{ width: 100%; height: 100%; position: relative; overflow: hidden; }
+    .lb-stage{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 
     .lightbox-img{
-      max-width:100%;
-      max-height:100%;
-      border-radius:18px;
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow:0 30px 80px rgba(0,0,0,.15);
-      background:#fff;
-      transform-origin:center center;
-      cursor: zoom-in;
-      will-change: transform;
+      max-width:100%; max-height:100%; object-fit: contain;
+      transform-origin: center center; will-change: transform;
+      pointer-events: none; transition: none; 
     }
-
-    .lightbox-img.zoomed{ cursor: grab; }
-    .lightbox-img.zoomed:active{ cursor: grabbing; }
+    
+    .lb-protection {
+      position: absolute; inset: 0; z-index: 4050; 
+      cursor: none; /* Custom cursor handler */
+    }
 
     .caption{
-      font-size:14px;
-      opacity:.75;
-      text-align:center;
-      max-width:900px;
-      line-height:1.35;
-      user-select:none;
+      position: absolute; bottom: 20px; left:0; width:100%;
+      font-size:13px; opacity:.8; text-align:center;
+      pointer-events: none; z-index: 4200;
+      background: rgba(255,255,255,0.8); padding: 5px 0;
     }
 
+    /* ===== MENSAJE EN EL CURSOR ===== */
+    .cursor-msg {
+        position: fixed;
+        top: 0; left: 0;
+        pointer-events: none;
+        z-index: 6000;
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 4px;
+        opacity: 0;
+        transform: translate(15px, 15px);
+        transition: opacity 0.2s ease, transform 0.1s ease;
+        white-space: nowrap;
+    }
+    
+    .cursor-msg.visible { opacity: 1; }
+
     @media (max-width: 600px){
-      :root{
-        --page-pad:18px;
-        --logo-width:160px;
-        --gap:22px;
-        --wide-aspect: 4 / 3;
-      }
+      :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
-      .lb-prev{ left: 10px; }
-      .lb-next{ right: 10px; }
-      .lb-close{ right: 12px; }
-      .story-subtitle{ white-space: normal; }
+      .cursor-msg { display: none; }
+      /* Ajuste para móvil: sube menos porque el padding es menor */
+      .home-hero { margin-top: -18px; } 
     }
   </style>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
+
+<div class="cursor-msg" id="cursorMsg">CLICK TO ZOOM</div>
 
 <header>
   <div class="header-inner">
@@ -369,67 +234,31 @@
 
 <main>
   <section id="home" class="active">
-    <!-- HOME IMAGE -->
     <img src="assets/img/photos/MAIN.jpg" class="home-hero" alt="coke momo">
   </section>
 
   <section id="story-01">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-
   <section id="story-02">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-
   <section id="story-03">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-
   <section id="story-04">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-
   <section id="story-05">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-
   <section id="story-06">
-    <div class="story-header">
-      <div class="story-title-row">
-        <div class="story-title"></div>
-        <div class="story-subtitle"></div>
-      </div>
-    </div>
+    <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
 </main>
@@ -438,13 +267,13 @@
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <div class="lb-ui">
-    <button class="lb-btn lb-close" id="lbClose" aria-label="Cerrar">×</button>
-    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Anterior">‹</button>
-    <button class="lb-btn lb-next" id="lbNext" aria-label="Siguiente">›</button>
+    <button class="lb-btn lb-close" id="lbClose">×</button>
+    <button class="lb-btn lb-prev" id="lbPrev">‹</button>
+    <button class="lb-btn lb-next" id="lbNext">›</button>
   </div>
-
   <div class="lightbox-inner">
-    <div class="lb-stage" id="lbStage">
+    <div class="lb-stage">
+      <div class="lb-protection" id="lbProtection"></div>
       <img class="lightbox-img" id="lbImg" alt="">
     </div>
     <div class="caption" id="lbCaption"></div>
@@ -455,37 +284,20 @@
   const MAX_PHOTOS = 40;
   const EXT = '.jpg';
   const WIDE_RATIO = 1.1;
-
-  // 2º click ≈ 70%
-  const ZOOM_LEVELS = [1, 1.7, 2.5];
-  const ZOOM_MIN = 1;
-  const ZOOM_MAX = 3;
+  const ZOOM_SCALE = 4; // 400%
+  
+  const getHeaderHeight = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
   let captions = {};
   let currentList = [];
   let currentIndex = -1;
 
-  let scale = 1;
-  let panX = 0;
-  let panY = 0;
-  let dragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let panStartX = 0;
-  let panStartY = 0;
-
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchMoved = false;
-
   const lightbox = document.getElementById('lightbox');
   const lbImg = document.getElementById('lbImg');
+  const lbProtection = document.getElementById('lbProtection');
   const lbCaption = document.getElementById('lbCaption');
+  const cursorMsg = document.getElementById('cursorMsg');
 
-  /* ================================
-     CAMBIA AQUÍ LAS DESCRIPCIONES
-     (placeholder 10 palabras ahora)
-  ================================== */
   const STORY_DESCRIPTIONS = {
     "story-01": "Band Press Photos.",
     "story-02": "The process of the unique.",
@@ -495,31 +307,44 @@
     "story-06": "What moves us."
   };
 
+  // ===== GESTIÓN DEL CURSOR PERSONALIZADO =====
+  document.addEventListener('mousemove', (e) => {
+    cursorMsg.style.left = e.clientX + 'px';
+    cursorMsg.style.top = e.clientY + 'px';
+  });
+
+  function showCursorMsg(text) {
+    cursorMsg.textContent = text;
+    cursorMsg.classList.add('visible');
+  }
+  function hideCursorMsg() {
+    cursorMsg.classList.remove('visible');
+  }
+
+  lbProtection.addEventListener('mouseenter', () => showCursorMsg('CLICK TO ZOOM OUT'));
+  lbProtection.addEventListener('mouseleave', hideCursorMsg);
+
+
   function setActiveSection(id){
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
-
-  function goHome(){
-    setActiveSection('home');
-  }
+  function goHome(){ setActiveSection('home'); }
 
   async function loadStory(storyId){
     const section = document.getElementById(storyId);
     const grid = section.querySelector('.grid');
     const titleEl = section.querySelector('.story-title');
     const subtitleEl = section.querySelector('.story-subtitle');
-
     const btn = document.querySelector(`.menu-list button[data-target="${storyId}"]`);
+    
     titleEl.textContent = btn ? btn.textContent : '';
-
-    const desc = STORY_DESCRIPTIONS[storyId] || "Ten small moments, quiet light, everyday gestures, held together gently.";
+    const desc = STORY_DESCRIPTIONS[storyId] || "Ten small moments.";
     subtitleEl.textContent = " / " + desc;
 
     grid.innerHTML = '';
     captions = {};
     currentList = [];
-
     const base = `assets/img/stories/${storyId}/`;
 
     try{
@@ -530,171 +355,107 @@
     for(let i=1;i<=MAX_PHOTOS;i++){
       const name = `PHOTO-${i}${EXT}`;
       const src = base + name;
-
       const tile = document.createElement('div');
       tile.className = 'tile';
-
       const img = document.createElement('img');
-      img.src = src;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.alt = '';
-      img.draggable = false;
+      img.src = src; img.loading = 'lazy'; img.alt = '';
+      
+      tile.addEventListener('mouseenter', () => showCursorMsg('CLICK TO ZOOM'));
+      tile.addEventListener('mouseleave', hideCursorMsg);
 
       img.addEventListener('load', () => {
-        if (img.naturalWidth / img.naturalHeight > WIDE_RATIO){
-          tile.classList.add('wide');
-        }
+        if (img.naturalWidth / img.naturalHeight > WIDE_RATIO) tile.classList.add('wide');
         currentList.push({ src, name, caption: captions[name] || '' });
       });
-
       img.addEventListener('error', () => tile.remove());
-
+      
       tile.addEventListener('click', () => {
         const idx = currentList.findIndex(x => x.name === name);
+        hideCursorMsg();
         openLightbox(idx >= 0 ? idx : 0);
       });
-
       tile.appendChild(img);
       grid.appendChild(tile);
     }
   }
 
-  function applyTransform(){
-    lbImg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-    lbImg.classList.toggle('zoomed', scale > 1.001);
-  }
-
-  function resetZoom(){
-    scale = 1; panX = 0; panY = 0;
-    applyTransform();
-  }
-
   function openLightbox(index){
     if (!currentList.length) return;
     currentIndex = (index + currentList.length) % currentList.length;
-
     const item = currentList[currentIndex];
     lbImg.src = item.src;
     lbCaption.textContent = item.caption || '';
-    resetZoom();
-
-    lightbox.classList.add('open');
+    
+    lightbox.classList.add('open', 'direct-zoom');
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
+
+    const hOffset = getHeaderHeight();
+    requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
   }
 
   function closeLightbox(){
-    lightbox.classList.remove('open');
+    lightbox.classList.remove('open', 'direct-zoom');
     lightbox.setAttribute('aria-hidden','true');
     lbImg.src = '';
-    lbCaption.textContent = '';
-    resetZoom();
     document.body.style.overflow = '';
+    hideCursorMsg();
   }
 
-  function next(){ openLightbox(currentIndex + 1); }
-  function prev(){ openLightbox(currentIndex - 1); }
+  function updatePan(mouseX, mouseY){
+    if (!lbImg.naturalWidth) return;
 
-  // zoom cycle on click
-  let zoomLevelIdx = 0;
-  function cycleZoom(){
-    zoomLevelIdx = (zoomLevelIdx + 1) % ZOOM_LEVELS.length;
-    scale = ZOOM_LEVELS[zoomLevelIdx];
-    if (scale <= 1.001){ panX = 0; panY = 0; }
-    applyTransform();
-  }
-  lbImg.addEventListener('click', (e) => { if (!dragging) cycleZoom(); });
+    const hOffset = getHeaderHeight();
+    const viewportW = window.innerWidth;
+    const viewportH = window.innerHeight - hOffset;
 
-  // drag pan
-  lbImg.addEventListener('pointerdown', (e) => {
-    if (scale <= 1.001) return;
-    dragging = true;
-    lbImg.setPointerCapture(e.pointerId);
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    panStartX = panX;
-    panStartY = panY;
-  });
+    const imgRatio = lbImg.naturalWidth / lbImg.naturalHeight;
+    const screenRatio = viewportW / viewportH;
 
-  lbImg.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    panX = panStartX + (e.clientX - dragStartX);
-    panY = panStartY + (e.clientY - dragStartY);
-    applyTransform();
-  });
+    let renderW, renderH;
 
-  lbImg.addEventListener('pointerup', () => { dragging = false; });
-  lbImg.addEventListener('pointercancel', () => { dragging = false; });
-
-  // wheel zoom
-  lightbox.addEventListener('wheel', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    e.preventDefault();
-    const factor = (-e.deltaY) > 0 ? 1.08 : 0.92;
-    scale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, scale * factor));
-    if (scale <= 1.001){ panX = 0; panY = 0; zoomLevelIdx = 0; }
-    applyTransform();
-  }, { passive:false });
-
-  // swipe
-  lightbox.addEventListener('touchstart', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.touches.length !== 1) return;
-    touchMoved = false;
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive:true });
-
-  lightbox.addEventListener('touchmove', () => { touchMoved = true; }, { passive:true });
-
-  lightbox.addEventListener('touchend', (e) => {
-    if (!touchMoved) return;
-    const endX = (e.changedTouches[0] || {}).clientX ?? touchStartX;
-    const endY = (e.changedTouches[0] || {}).clientY ?? touchStartY;
-    const dx = endX - touchStartX;
-    const dy = endY - touchStartY;
-    const threshold = scale > 1.001 ? 120 : 60;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold){
-      if (dx < 0) next(); else prev();
+    if (imgRatio > screenRatio) {
+      renderW = viewportW; renderH = viewportW / imgRatio;
+    } else {
+      renderH = viewportH; renderW = viewportH * imgRatio;
     }
-  }, { passive:true });
 
-  // UI buttons (flechas)
+    const scaledW = renderW * ZOOM_SCALE;
+    const scaledH = renderH * ZOOM_SCALE;
+
+    const overflowX = Math.max(0, scaledW - viewportW);
+    const overflowY = Math.max(0, scaledH - viewportH);
+
+    const xPerc = mouseX / viewportW;
+    const yPerc = Math.max(0, Math.min(1, (mouseY - hOffset) / viewportH));
+
+    const moveX = (0.5 - xPerc) * overflowX;
+    const moveY = (0.5 - yPerc) * overflowY;
+
+    lbImg.style.transform = `translate(${moveX}px, ${moveY}px) scale(${ZOOM_SCALE})`;
+  }
+
+  lbProtection.addEventListener('mousemove', (e) => {
+    requestAnimationFrame(() => { updatePan(e.clientX, e.clientY); });
+  });
+
+  lbProtection.addEventListener('click', closeLightbox);
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
-  document.getElementById('lbNext').addEventListener('click', next);
-  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // close on background click
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-
-  // keyboard arrows
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'ArrowLeft') prev();
-  });
-
-  // menu
   const menu = document.getElementById('menu');
-  document.getElementById('menuToggle').addEventListener('click', () => {
-    menu.classList.toggle('open');
-  });
-  document.addEventListener('click', (e) => {
-    if (!menu.contains(e.target)) menu.classList.remove('open');
-  });
+  document.getElementById('menuToggle').addEventListener('click', () => { menu.classList.toggle('open'); });
+  document.addEventListener('click', (e) => { if (!menu.contains(e.target)) menu.classList.remove('open'); });
+  
   document.querySelectorAll('.menu-list button').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.target;
       menu.classList.remove('open');
       setActiveSection(id);
-      if (id.startsWith('story')) await loadStory(id);
-      else goHome();
+      if (id.startsWith('story')) await loadStory(id); else goHome();
     });
   });
 
-  // logo home
   document.getElementById('logoHome').addEventListener('click', goHome);
 </script>
 
