@@ -213,7 +213,6 @@
         
         .lightbox.open {
             display: block; 
-            /* Importante: Permitir scroll en ambas direcciones */
             overflow: auto; 
             -webkit-overflow-scrolling: touch;
             touch-action: auto;
@@ -224,7 +223,7 @@
             height: auto;
             min-height: 100%;
             overflow: visible;
-            display: flex; /* Para centrar contenido si es pequeño, aunque aquí será gigante */
+            display: flex; 
             align-items: flex-start;
             justify-content: flex-start;
         }
@@ -237,7 +236,7 @@
         }
 
         .lightbox-img {
-            /* AQUI ESTA LA MAGIA: Forzamos ancho 300% de la pantalla */
+            /* MÓVIL: Forzamos ancho 300% de la pantalla */
             width: 300vw !important; 
             max-width: none !important;
             height: auto !important;
@@ -247,17 +246,12 @@
             margin: 0;
             display: block;
             
-            /* Reactivamos los eventos para poder hacer click y cerrar */
             pointer-events: auto; 
             cursor: zoom-out;
         }
 
         .lb-protection { display: none !important; }
-
-        /* Ocultamos caption en móvil para que no moleste al hacer pan */
         .caption { display: none !important; }
-        
-        /* Ocultamos flechas en móvil */
         .lb-btn { display: none !important; }
     }
   </style>
@@ -274,12 +268,12 @@
       <button id="menuToggle">STORIES</button>
       <div class="menu-list">
         <button data-target="home">HOME</button>
-        <button data-target="story-01">PSILICON FLESH</button>
-        <button data-target="story-02">HELD IN TIME</button>
-        <button data-target="story-03">PATH</button>
-        <button data-target="story-04">STRINGS</button>
-        <button data-target="story-05">PORTRAITURE</button>
-        <button data-target="story-06">CORE</button>
+        <button data-target="psilicon-flesh">PSILICON FLESH</button>
+        <button data-target="held-in-time">HELD IN TIME</button>
+        <button data-target="path">PATH</button>
+        <button data-target="strings">STRINGS</button>
+        <button data-target="portraiture">PORTRAITURE</button>
+        <button data-target="core">CORE</button>
       </div>
     </div>
   </div>
@@ -290,27 +284,27 @@
     <img src="assets/img/photos/MAIN.jpg" class="home-hero" alt="coke momo">
   </section>
 
-  <section id="story-01">
+  <section id="psilicon-flesh">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-  <section id="story-02">
+  <section id="held-in-time">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-  <section id="story-03">
+  <section id="path">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-  <section id="story-04">
+  <section id="strings">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-  <section id="story-05">
+  <section id="portraiture">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
-  <section id="story-06">
+  <section id="core">
     <div class="story-header"><div class="story-title-row"><div class="story-title"></div><div class="story-subtitle"></div></div></div>
     <div class="grid"></div>
   </section>
@@ -351,13 +345,14 @@
   const lbCaption = document.getElementById('lbCaption');
   const cursorMsg = document.getElementById('cursorMsg');
 
+  // ACTUALIZADO: Diccionario con las nuevas claves
   const STORY_DESCRIPTIONS = {
-    "story-01": "Band Press Photos.",
-    "story-02": "The process of the unique.",
-    "story-03": "Images from the path itself.",
-    "story-04": "People around.",
-    "story-05": "Studio lighting.",
-    "story-06": "What moves us."
+    "psilicon-flesh": "Band Press Photos.",
+    "held-in-time": "The process of the unique.",
+    "path": "Images from the path itself.",
+    "strings": "People around.",
+    "portraiture": "Studio lighting.",
+    "core": "What moves us."
   };
 
   document.addEventListener('mousemove', (e) => {
@@ -399,6 +394,8 @@
     grid.innerHTML = '';
     captions = {};
     currentList = [];
+    
+    // Aquí es donde la magia ocurre: usa el storyId (ej: psilicon-flesh) como nombre de carpeta
     const base = `assets/img/stories/${storyId}/`;
 
     try{
@@ -446,13 +443,10 @@
 
     // LÓGICA MÓVIL vs ESCRITORIO
     if (window.innerWidth > 900) {
-      // ESCRITORIO: Iniciar paneo ratón
       const hOffset = getHeaderHeight();
       requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
     } else {
-      // MÓVIL: Centrar el scroll automáticamente al abrir
       setTimeout(() => {
-         // Intentar centrar la imagen gigante en la pantalla
          lightbox.scrollLeft = (lightbox.scrollWidth - window.innerWidth) / 2;
          lightbox.scrollTop = (lightbox.scrollHeight - window.innerHeight) / 2;
       }, 10);
@@ -468,7 +462,6 @@
   }
 
   function updatePan(mouseX, mouseY){
-    // Si es móvil, no calculamos nada
     if (window.innerWidth <= 900) return;
 
     if (!lbImg.naturalWidth) return;
@@ -507,9 +500,7 @@
     requestAnimationFrame(() => { updatePan(e.clientX, e.clientY); });
   });
 
-  // CERRAR LIGHTBOX
   lbProtection.addEventListener('click', closeLightbox);
-  // En móvil, como la imagen es gigante y tapa el lbProtection, añadimos evento directo a la imagen
   lbImg.addEventListener('click', closeLightbox); 
   
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
@@ -524,7 +515,7 @@
       const id = btn.dataset.target;
       menu.classList.remove('open');
       setActiveSection(id);
-      if (id.startsWith('story')) await loadStory(id); else goHome();
+      if (id !== 'home') await loadStory(id); else goHome();
     });
   });
 
