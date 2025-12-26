@@ -11,21 +11,29 @@
   <link rel="icon" href="/favicon.png" sizes="512x512" type="image/png">
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#121212">
 
   <style>
     :root{
-      --bg:#ffffff;
+      /* --- COLORES DARK MODE --- */
+      --bg: #121212;             
+      --text-main: #e0e0e0;      
+      --text-muted: #888888;     
+      
       --page-max: 1400px;
       --page-pad: 32px;
-      --header-height: 100px; 
-      --header-border-width: 1px;
-      --header-border-color: rgba(0,0,0,.06);
+      --header-height: 120px; 
+      
+      --header-border-width: 0px; 
+      --header-border-color: transparent;
+      
       --logo-width: 200px;
       --gap: 32px;
       --radius: 16px;
-      --border: 0px solid rgba(0,0,0,0.30);
-      --shadow: 0 18px 40px rgba(0,0,0,.40);
+      
+      --border: 1px solid rgba(255,255,255,0.1); 
+      --shadow: 0 18px 40px rgba(0,0,0,.60); 
+      
       --ui-font-size: 13px;
       --ui-opacity: .75;
       --footer-font-size: 12px;
@@ -38,7 +46,7 @@
     *{ box-sizing:border-box; }
     
     html,body{ 
-        margin:0; padding:0; background:var(--bg); color:#111; 
+        margin:0; padding:0; background:var(--bg); color:var(--text-main); 
         -webkit-user-select: none; user-select: none;
         overflow-x: hidden; 
         cursor: default;
@@ -49,15 +57,58 @@
       font-family:-apple-system,BlinkMacSystemFont, "Helvetica Neue",Helvetica,Arial,sans-serif;
     }
 
-    /* ===== HEADER FIJO ===== */
+    /* ===== HEADER FIXED ===== */
     header{
       position: fixed; 
       top: 0; left: 0; width: 100%; height: var(--header-height);
       z-index: 5000;
-      background: rgba(255,255,255,.98);
-      backdrop-filter: blur(8px);
-      border-bottom: var(--header-border-width) solid var(--header-border-color);
+      background: transparent; 
       display: flex; align-items: center;
+      
+      /* TRANSICIÓN DE OPACIDAD (Para ocultarlo suavemente en zoom) */
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* CLASE PARA OCULTAR HEADER EN ZOOM */
+    header.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* CAPA DE FONDO (EFECTO CRISTAL + GRADIENTE) */
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0; 
+      z-index: -1; 
+      transition: opacity 0.6s ease, background 0.6s ease;
+      
+      /* --- HOME --- */
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+      opacity: 1;
+    }
+
+    /* --- MODO STORIES (GRADIENTE NEGRO OSCURO) --- */
+    header.story-mode::before {
+      /* Negro Puro */
+      background: #121212; 
+      
+      /* Blur para suavizar lo de atrás */
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      
+      /* MÁSCARA CORREGIDA: Sólido arriba (black), transparente abajo */
+      /* black 50% = Negro sólido hasta la mitad del header */
+      /* transparent 100% = Se desvanece al final */
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 80%, transparent 0%);
     }
 
     .header-inner{
@@ -65,26 +116,43 @@
       display:flex; align-items:center; justify-content:space-between; height: 100%;
     }
 
+    /* LOGO CON GLOW INTENSO */
     .logo{
       width: var(--logo-width); max-width:60vw; cursor:pointer; user-select:none; pointer-events: auto; 
+      filter: invert(1) brightness(0.9); 
+      transition: filter 0.4s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)) invert(1) brightness(0.9);
+    }
+    
+    .logo:hover { 
+        /* Glow blanco intenso */
+        filter: drop-shadow(0 0 20px rgba(255,255,255,0.9)) invert(1) brightness(2); 
     }
 
-    .menu{ position: relative; font-size: var(--ui-font-size); opacity: var(--ui-opacity); }
-    .menu button{ background:none; border:none; font:inherit; cursor:pointer; padding:6px 10px; }
+    .menu{ position: relative; font-size: var(--ui-font-size); opacity: 1; color: #fff; }
+    
+    .menu button{ 
+        background:none; border:none; font:inherit; cursor:pointer; padding:6px 10px; color: #fff; 
+        text-shadow: 0 1px 4px rgba(0,0,0,0.5); 
+        opacity: 0.9; transition: opacity 0.3s;
+    }
+    .menu button:hover { opacity: 1; }
 
     .menu-list{
       position:absolute; right:0; top:100%; margin-top:10px;
-      background:#fff; border:1px solid rgba(0,0,0,.08);
-      border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.08);
+      background: #1a1a1a; 
+      border: 1px solid #333;
+      border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,.5);
       display:none; min-width:160px; overflow:hidden;
     }
     .menu.open .menu-list{ display:block; }
 
     .menu-list button{
       width:100%; text-align:left; padding:10px 14px; border:none;
-      background:none; cursor:pointer; font-size:13px;
+      background:none; cursor:pointer; font-size:13px; color: #bbb;
+      text-shadow: none; 
     }
-    .menu-list button:hover{ background: rgba(0,0,0,.04); }
+    .menu-list button:hover{ background: rgba(255,255,255,.1); color: #fff; }
 
     main{
       max-width: var(--page-max); margin: 0 auto; padding: var(--page-pad);
@@ -100,12 +168,13 @@
     .story-title{ font-size: 18px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; user-select:none; }
     .story-subtitle{ font-size: 15px; font-weight: 400; font-style: italic; opacity: .78; user-select:none; white-space: nowrap; }
 
-    /* ===== PORTADA ===== */
+    /* ===== PORTADA FULL SCREEN ===== */
     .home-hero{
       width: 100vw; position: relative; left: 50%; right: 50%;
       margin-left: -50vw; margin-right: -50vw;
       display:block; object-fit: cover; box-shadow: var(--shadow);
-      margin-top: -32px; 
+      margin-top: calc((var(--header-height) + var(--page-pad)) * -1); 
+      filter: brightness(0.9);
     }
 
     .grid{ display:grid; grid-template-columns: repeat(2,1fr); gap: var(--gap); }
@@ -115,7 +184,8 @@
       position: relative; overflow:hidden; border-radius: var(--radius);
       border: var(--border); box-shadow: var(--shadow); 
       cursor: none; 
-      background:#fff; aspect-ratio: var(--tile-aspect); pointer-events: auto;
+      background: #000; 
+      aspect-ratio: var(--tile-aspect); pointer-events: auto;
     }
     .tile.wide{ grid-column: span 2; aspect-ratio: var(--wide-aspect); }
 
@@ -129,11 +199,20 @@
       text-align:center; font-size: var(--footer-font-size); opacity: var(--footer-opacity); user-select:none;
     }
 
-    /* ===== LIGHTBOX (ESCRITORIO) ===== */
+    /* ===== LIGHTBOX CON BLUR ===== */
     .lightbox{
-      position: fixed; top: var(--header-height); left: 0; width: 100%;
-      height: calc(100vh - var(--header-height)); 
-      display:none; z-index: 4000; background: #ffffff;
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      display:none; 
+      z-index: 6000; /* Z-Index alto */
+      
+      background: rgba(18,18,18,0.85); 
+      backdrop-filter: blur(25px);      
+      -webkit-backdrop-filter: blur(25px); 
+      
       align-items: center; justify-content: center;
       touch-action: none; overflow: hidden;
       cursor: none; 
@@ -141,7 +220,13 @@
 
     .lightbox.open{ display:flex; }
 
-    .lb-ui{ position: absolute; inset:0; pointer-events:none; z-index:4100; }
+    .lb-ui{ position: absolute; inset:0; pointer-events:none; z-index:6100; }
+    
+    .lb-btn { color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; border:none; cursor: pointer; font-size: 20px; position: absolute; pointer-events: auto; }
+    .lb-close { top: 20px; right: 20px; }
+    .lb-prev { top: 50%; left: 20px; transform: translateY(-50%); }
+    .lb-next { top: 50%; right: 20px; transform: translateY(-50%); }
+
     .lightbox.direct-zoom .lb-btn { display: none; }
     .lightbox.direct-zoom .caption { display: none; }
 
@@ -151,8 +236,6 @@
     .lightbox-img{
       max-width:100%; max-height:100%; object-fit: contain;
       transform-origin: center center; 
-      /* IMPORTANTE: Quitamos "will-change" para que la calidad sea máxima al hacer zoom */
-      /* will-change: transform;  <-- ELIMINADO */
       pointer-events: none; transition: none; 
     }
     
@@ -165,86 +248,49 @@
       position: absolute; bottom: 20px; left:0; width:100%;
       font-size:13px; opacity:.8; text-align:center;
       pointer-events: none; z-index: 4200;
-      background: rgba(255,255,255,0.8); padding: 5px 0;
+      color: #ccc; 
+      background: rgba(0,0,0,0.6); padding: 5px 0;
     }
 
     /* ===== MENSAJE EN EL CURSOR ===== */
     .cursor-msg {
-        position: fixed;
-        top: 0; left: 0;
-        pointer-events: none;
-        z-index: 6000;
+        position: fixed; top: 0; left: 0; pointer-events: none; z-index: 7000;
         padding: 6px 10px;
-        background: rgba(0, 0, 0, 0.85);
-        color: white;
-        font-size: 10px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-radius: 4px;
-        opacity: 0;
+        background: rgba(255, 255, 255, 0.9); color: #000; 
+        font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;
+        border-radius: 4px; opacity: 0;
         transform: translate(15px, 15px);
         transition: opacity 0.2s ease, transform 0.1s ease;
         white-space: nowrap;
     }
-    
     .cursor-msg.visible { opacity: 1; }
 
     @media (max-width: 600px){
       :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
       .cursor-msg { display: none; }
-      .home-hero { margin-top: -18px; } 
+      .home-hero { margin-top: calc((var(--header-height) + var(--page-pad)) * -1); } 
     }
 
-    /* =========================================
-       CONFIGURACIÓN MÓVIL (ZOOM 300% + SCROLL)
-       ========================================= */
     @media (max-width: 900px) {
         .lightbox { display: none; } 
         
         .lightbox.open {
-            display: block; 
-            overflow: auto; 
-            -webkit-overflow-scrolling: touch;
-            touch-action: auto;
-            padding: 0;
+            display: block; overflow: auto; 
+            -webkit-overflow-scrolling: touch; touch-action: auto; padding: 0;
         }
-
         .lightbox-inner {
-            height: auto;
-            min-height: 100%;
-            overflow: visible;
-            display: flex; 
-            align-items: flex-start;
-            justify-content: flex-start;
+            height: auto; min-height: 100%; overflow: visible;
+            display: flex; align-items: flex-start; justify-content: flex-start;
         }
-        
-        .lb-stage {
-            display: block;
-            width: auto;
-            height: auto;
-            padding: 0;
-        }
-
+        .lb-stage { display: block; width: auto; height: auto; padding: 0; }
         .lightbox-img {
-            /* MÓVIL: Forzamos ancho 300% de la pantalla */
-            width: 300vw !important; 
-            max-width: none !important;
-            height: auto !important;
-            max-height: none !important;
-            
-            transform: none !important;
-            margin: 0;
-            display: block;
-            
-            pointer-events: auto; 
-            cursor: zoom-out;
+            width: 300vw !important; max-width: none !important;
+            height: auto !important; max-height: none !important;
+            transform: none !important; margin: 0; display: block;
+            pointer-events: auto; cursor: zoom-out;
         }
-
-        .lb-protection { display: none !important; }
-        .caption { display: none !important; }
-        .lb-btn { display: none !important; }
+        .lb-protection, .caption, .lb-btn { display: none !important; }
     }
   </style>
 </head>
@@ -323,7 +369,7 @@
   const MAX_PHOTOS = 40;
   const EXT = '.jpg';
   const WIDE_RATIO = 1.1;
-  const ZOOM_SCALE_DESKTOP = 2; // Zoom nítido en Desktop
+  const ZOOM_SCALE_DESKTOP = 4; 
   
   const getHeaderHeight = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
@@ -336,8 +382,8 @@
   const lbProtection = document.getElementById('lbProtection');
   const lbCaption = document.getElementById('lbCaption');
   const cursorMsg = document.getElementById('cursorMsg');
+  const header = document.querySelector('header'); 
 
-  // ACTUALIZADO: Descripciones con claves nuevas
   const STORY_DESCRIPTIONS = {
     "psilicon-flesh": "Band Press Photos.",
     "held-in-time": "The process of the unique.",
@@ -358,9 +404,7 @@
         cursorMsg.classList.add('visible');
     }
   }
-  function hideCursorMsg() {
-    cursorMsg.classList.remove('visible');
-  }
+  function hideCursorMsg() { cursorMsg.classList.remove('visible'); }
 
   lbProtection.addEventListener('mouseenter', () => showCursorMsg('CLICK TO ZOOM OUT'));
   lbProtection.addEventListener('mouseleave', hideCursorMsg);
@@ -369,6 +413,14 @@
   function setActiveSection(id){
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    
+    if (id === 'home') {
+        header.classList.remove('story-mode');
+    } else {
+        header.classList.add('story-mode');
+    }
+
+    window.scrollTo(0,0);
   }
   function goHome(){ setActiveSection('home'); }
 
@@ -387,7 +439,6 @@
     captions = {};
     currentList = [];
     
-    // RUTA ACTUALIZADA
     const base = `assets/img/stories/${storyId}/`;
 
     try{
@@ -432,11 +483,12 @@
     lightbox.classList.add('open', 'direct-zoom');
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
+    
+    // OCULTAR HEADER AL ABRIR LIGHTBOX
+    header.classList.add('hidden');
 
-    // LÓGICA MÓVIL vs ESCRITORIO
     if (window.innerWidth > 900) {
-      const hOffset = getHeaderHeight();
-      requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
+      requestAnimationFrame(() => updatePan(window.innerWidth / 2, window.innerHeight / 2));
     } else {
       setTimeout(() => {
          lightbox.scrollLeft = (lightbox.scrollWidth - window.innerWidth) / 2;
@@ -451,16 +503,18 @@
     lbImg.src = '';
     document.body.style.overflow = '';
     hideCursorMsg();
+    
+    // MOSTRAR HEADER AL CERRAR LIGHTBOX
+    header.classList.remove('hidden');
   }
 
   function updatePan(mouseX, mouseY){
     if (window.innerWidth <= 900) return;
-
     if (!lbImg.naturalWidth) return;
 
-    const hOffset = getHeaderHeight();
+    const hOffset = 0;
     const viewportW = window.innerWidth;
-    const viewportH = window.innerHeight - hOffset;
+    const viewportH = window.innerHeight;
 
     const imgRatio = lbImg.naturalWidth / lbImg.naturalHeight;
     const screenRatio = viewportW / viewportH;
