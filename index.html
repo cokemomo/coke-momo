@@ -13,16 +13,6 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#ffffff">
 
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.cokemomo.com/">
-  <meta property="og:title" content="coke momo">
-  <meta property="og:description" content="Visual stories and photography.">
-  <meta property="og:image" content="https://www.cokemomo.com/OG.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="coke momo">
-  <meta name="twitter:image" content="https://www.cokemomo.com/OG.png">
-
   <style>
     :root{
       --bg:#ffffff;
@@ -160,7 +150,9 @@
 
     .lightbox-img{
       max-width:100%; max-height:100%; object-fit: contain;
-      transform-origin: center center; will-change: transform;
+      transform-origin: center center; 
+      /* IMPORTANTE: Quitamos "will-change" para que la calidad sea máxima al hacer zoom */
+      /* will-change: transform;  <-- ELIMINADO */
       pointer-events: none; transition: none; 
     }
     
@@ -206,7 +198,7 @@
     }
 
     /* =========================================
-       CONFIGURACIÓN ZOOM 300% MÓVIL
+       CONFIGURACIÓN MÓVIL (ZOOM 300% + SCROLL)
        ========================================= */
     @media (max-width: 900px) {
         .lightbox { display: none; } 
@@ -331,7 +323,7 @@
   const MAX_PHOTOS = 40;
   const EXT = '.jpg';
   const WIDE_RATIO = 1.1;
-  const ZOOM_SCALE_DESKTOP = 2; // Zoom para PC
+  const ZOOM_SCALE_DESKTOP = 2; // Zoom nítido en Desktop
   
   const getHeaderHeight = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
@@ -345,7 +337,7 @@
   const lbCaption = document.getElementById('lbCaption');
   const cursorMsg = document.getElementById('cursorMsg');
 
-  // ACTUALIZADO: Diccionario con las nuevas claves
+  // ACTUALIZADO: Descripciones con claves nuevas
   const STORY_DESCRIPTIONS = {
     "psilicon-flesh": "Band Press Photos.",
     "held-in-time": "The process of the unique.",
@@ -395,7 +387,7 @@
     captions = {};
     currentList = [];
     
-    // Aquí es donde la magia ocurre: usa el storyId (ej: psilicon-flesh) como nombre de carpeta
+    // RUTA ACTUALIZADA
     const base = `assets/img/stories/${storyId}/`;
 
     try{
