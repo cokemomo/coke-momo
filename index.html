@@ -206,14 +206,17 @@
     }
 
     /* =========================================
-       ARREGLO CRUCIAL PARA MÓVIL (ESTO FALTABA)
+       ARREGLO CRUCIAL PARA MÓVIL
        ========================================= */
     @media (max-width: 900px) {
-        .lightbox {
-            display: block; /* Importante para permitir flujo natural */
-            overflow-y: auto; /* Permite scroll vertical */
+        /* ESTA FUE LA CORRECCIÓN CLAVE: */
+        .lightbox { display: none; } 
+        
+        .lightbox.open {
+            display: block; /* Solo visible si tiene clase .open */
+            overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
-            touch-action: auto; /* Reactiva los gestos táctiles */
+            touch-action: auto;
             padding: 0;
         }
 
@@ -232,7 +235,6 @@
         }
 
         .lightbox-img {
-            /* Anular zoom de JS en móvil */
             transform: none !important;
             width: 100%;
             max-width: 100%;
@@ -240,13 +242,11 @@
             max-height: none !important;
             margin: 0 auto;
             display: block;
-            pointer-events: auto; /* Permitir tocar la imagen */
+            pointer-events: auto; 
         }
 
-        /* Quitamos la capa que roba los clics */
         .lb-protection { display: none !important; }
 
-        /* Mostrar caption abajo */
         .lightbox.direct-zoom .caption { 
             display: block !important; 
             position: relative;
@@ -332,8 +332,7 @@
   const MAX_PHOTOS = 40;
   const EXT = '.jpg';
   const WIDE_RATIO = 1.1;
-  // HE BAJADO EL ZOOM A 2 PARA QUE NO SE PIXELE TANTO EN DESKTOP
-  const ZOOM_SCALE = 2; 
+  const ZOOM_SCALE = 2; // Zoom moderado para evitar pixelado
   
   const getHeaderHeight = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
@@ -362,7 +361,6 @@
   });
 
   function showCursorMsg(text) {
-    // Solo mostrar mensaje en PC (ancho > 900)
     if (window.innerWidth > 900) { 
         cursorMsg.textContent = text;
         cursorMsg.classList.add('visible');
@@ -441,7 +439,6 @@
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
 
-    // SOLO activar zoom si es PC (pantalla ancha)
     if (window.innerWidth > 900) {
       const hOffset = getHeaderHeight();
       requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
@@ -457,7 +454,6 @@
   }
 
   function updatePan(mouseX, mouseY){
-    // Si es móvil, no calculamos nada
     if (window.innerWidth <= 900) return;
 
     if (!lbImg.naturalWidth) return;
