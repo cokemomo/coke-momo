@@ -139,7 +139,7 @@
       text-align:center; font-size: var(--footer-font-size); opacity: var(--footer-opacity); user-select:none;
     }
 
-    /* ===== LIGHTBOX ===== */
+    /* ===== LIGHTBOX (ESCRITORIO) ===== */
     .lightbox{
       position: fixed; top: var(--header-height); left: 0; width: 100%;
       height: calc(100vh - var(--header-height)); 
@@ -206,15 +206,15 @@
     }
 
     /* =========================================
-       ARREGLO CRUCIAL PARA MÓVIL
+       CONFIGURACIÓN ZOOM 300% MÓVIL
        ========================================= */
     @media (max-width: 900px) {
-        /* ESTA FUE LA CORRECCIÓN CLAVE: */
         .lightbox { display: none; } 
         
         .lightbox.open {
-            display: block; /* Solo visible si tiene clase .open */
-            overflow-y: auto; 
+            display: block; 
+            /* Importante: Permitir scroll en ambas direcciones */
+            overflow: auto; 
             -webkit-overflow-scrolling: touch;
             touch-action: auto;
             padding: 0;
@@ -224,36 +224,41 @@
             height: auto;
             min-height: 100%;
             overflow: visible;
-            display: block;
+            display: flex; /* Para centrar contenido si es pequeño, aunque aquí será gigante */
+            align-items: flex-start;
+            justify-content: flex-start;
         }
         
         .lb-stage {
             display: block;
+            width: auto;
             height: auto;
-            padding: 20px;
-            padding-bottom: 80px;
+            padding: 0;
         }
 
         .lightbox-img {
-            transform: none !important;
-            width: 100%;
-            max-width: 100%;
+            /* AQUI ESTA LA MAGIA: Forzamos ancho 300% de la pantalla */
+            width: 300vw !important; 
+            max-width: none !important;
             height: auto !important;
             max-height: none !important;
-            margin: 0 auto;
+            
+            transform: none !important;
+            margin: 0;
             display: block;
+            
+            /* Reactivamos los eventos para poder hacer click y cerrar */
             pointer-events: auto; 
+            cursor: zoom-out;
         }
 
         .lb-protection { display: none !important; }
 
-        .lightbox.direct-zoom .caption { 
-            display: block !important; 
-            position: relative;
-            bottom: auto;
-            margin-top: 15px;
-            background: transparent;
-        }
+        /* Ocultamos caption en móvil para que no moleste al hacer pan */
+        .caption { display: none !important; }
+        
+        /* Ocultamos flechas en móvil */
+        .lb-btn { display: none !important; }
     }
   </style>
 </head>
@@ -332,7 +337,7 @@
   const MAX_PHOTOS = 40;
   const EXT = '.jpg';
   const WIDE_RATIO = 1.1;
-  const ZOOM_SCALE = 2; // Zoom moderado para evitar pixelado
+  const ZOOM_SCALE_DESKTOP = 2; // Zoom para PC
   
   const getHeaderHeight = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
@@ -439,9 +444,18 @@
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
 
+    // LÓGICA MÓVIL vs ESCRITORIO
     if (window.innerWidth > 900) {
+      // ESCRITORIO: Iniciar paneo ratón
       const hOffset = getHeaderHeight();
       requestAnimationFrame(() => updatePan(window.innerWidth / 2, (window.innerHeight - hOffset) / 2));
+    } else {
+      // MÓVIL: Centrar el scroll automáticamente al abrir
+      setTimeout(() => {
+         // Intentar centrar la imagen gigante en la pantalla
+         lightbox.scrollLeft = (lightbox.scrollWidth - window.innerWidth) / 2;
+         lightbox.scrollTop = (lightbox.scrollHeight - window.innerHeight) / 2;
+      }, 10);
     }
   }
 
@@ -454,6 +468,7 @@
   }
 
   function updatePan(mouseX, mouseY){
+    // Si es móvil, no calculamos nada
     if (window.innerWidth <= 900) return;
 
     if (!lbImg.naturalWidth) return;
@@ -473,8 +488,8 @@
       renderH = viewportH; renderW = viewportH * imgRatio;
     }
 
-    const scaledW = renderW * ZOOM_SCALE;
-    const scaledH = renderH * ZOOM_SCALE;
+    const scaledW = renderW * ZOOM_SCALE_DESKTOP;
+    const scaledH = renderH * ZOOM_SCALE_DESKTOP;
 
     const overflowX = Math.max(0, scaledW - viewportW);
     const overflowY = Math.max(0, scaledH - viewportH);
@@ -485,14 +500,18 @@
     const moveX = (0.5 - xPerc) * overflowX;
     const moveY = (0.5 - yPerc) * overflowY;
 
-    lbImg.style.transform = `translate(${moveX}px, ${moveY}px) scale(${ZOOM_SCALE})`;
+    lbImg.style.transform = `translate(${moveX}px, ${moveY}px) scale(${ZOOM_SCALE_DESKTOP})`;
   }
 
   lbProtection.addEventListener('mousemove', (e) => {
     requestAnimationFrame(() => { updatePan(e.clientX, e.clientY); });
   });
 
+  // CERRAR LIGHTBOX
   lbProtection.addEventListener('click', closeLightbox);
+  // En móvil, como la imagen es gigante y tapa el lbProtection, añadimos evento directo a la imagen
+  lbImg.addEventListener('click', closeLightbox); 
+  
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
