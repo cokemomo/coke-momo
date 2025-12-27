@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="es">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LR7251LPSF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-LR7251LPSF');
+  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
@@ -95,20 +103,19 @@
       opacity: 1;
     }
 
-    /* --- MODO STORIES (GRADIENTE NEGRO OSCURO) --- */
+    /* --- MODO STORIES (GRADIENTE NEGRO SÓLIDO ARRIBA) --- */
     header.story-mode::before {
-      /* Negro Puro */
+      /* Negro Grafito */
       background: #121212; 
       
       /* Blur para suavizar lo de atrás */
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       
-      /* MÁSCARA CORREGIDA: Sólido arriba (black), transparente abajo */
-      /* black 50% = Negro sólido hasta la mitad del header */
-      /* transparent 100% = Se desvanece al final */
-      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-      mask-image: linear-gradient(to bottom, black 80%, transparent 0%);
+      /* MÁSCARA CORREGIDA: Sólido arriba (black 80%), transparente solo al final */
+      /* Esto asegura que la parte superior sea oscura y legible */
+      -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     }
 
     .header-inner{
