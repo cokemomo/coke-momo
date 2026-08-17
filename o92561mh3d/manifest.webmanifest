@@ -1,0 +1,16 @@
+{
+  "name": "Arroz & Caldo — Calculadora de Paella",
+  "short_name": "Arroz & Caldo",
+  "description": "Calcula el arroz y el caldo exactos para tu paella: comensales, paellera, quemadores, altitud y variedad de arroz.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1c1712",
+  "theme_color": "#1c1712",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
