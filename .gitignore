@@ -1,0 +1,17 @@
+# macOS: los .DS_Store guardan los nombres de las carpetas hermanas, asi que
+# versionarlos filtraria en el repo publico el nombre de las rutas no enlazadas.
+.DS_Store
+**/.DS_Store
+
+# NUNCA subir el juego sin cifrar: lleva dentro las fotos de la familia.
+# Al repo solo entra la salida de StatiCrypt.
+La Familia Revuelta.html
+*Familia Revuelta*
+
+# Restos de StatiCrypt (el config lleva el salt; los directorios, plaintext)
+.staticrypt.json
+/encrypted/
+/decrypted/
+
+# Config local del servidor de previsualizacion
+.claude/
