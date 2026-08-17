@@ -49,6 +49,12 @@
       --footer-padding: 48px 0 24px;
       --tile-aspect: 4 / 5;
       --wide-aspect: 16 / 9;
+
+      /* --- GRANO DE PELÍCULA --- */
+      --grain-opacity: .16;  /* grano sobre fotos y medios tonos */
+      --grain-lift: .12;     /* grano en los negros de la página */
+      --grain-tile: 200px;   /* más pequeño = grano más fino */
+      --grain-speed: .6s;    /* parpadeo del grano (0 = estático) */
     }
 
     *{ box-sizing:border-box; }
@@ -272,6 +278,70 @@
     }
     .cursor-msg.visible { opacity: 1; }
 
+    /* ===== GRANO DE PELÍCULA (SOBRE TODA LA WEB) =====
+       Dos capas, porque una sola no puede cubrir todo el rango:
+       - .grain (overlay): grano en medios tonos, respeta el contraste de las fotos.
+         Sobre un negro como #121212 el overlay se anula, así que aquí no basta.
+       - .grain-blacks (screen): solo aclara, así que es la que hace visible
+         el grano en los negros de la página. Como niebla de base de película. */
+    .grain, .grain-blacks{
+      position: fixed;
+      top: -10%; left: -10%;
+      width: 120%; height: 120%;   /* margen para el desplazamiento del parpadeo */
+      z-index: 9000;
+      pointer-events: none;
+      background-size: var(--grain-tile) var(--grain-tile);
+
+      /* El movimiento va por transform (GPU), no por background-position */
+      will-change: transform;
+      animation: grain-shift var(--grain-speed) steps(1) infinite;
+    }
+
+    /* Detalles que hacen que el grano se vea (medido en este Mac):
+       - color-interpolation-filters='sRGB': por defecto los filtros SVG trabajan
+         en linearRGB, y linear 0.5 sale a sRGB 0.735. Eso desplazaba el ruido
+         hacia claro y el overlay aclaraba la foto en vez de ser neutro.
+       - feComponentTransfer linear: feTurbulence crudo tiene una desviación de
+         solo 0.06, casi gris plano. slope=3 con intercept=(1-slope)/2 estira el
+         contraste a 0.23 manteniendo la media en 0.50, así que no toca exposición.
+       - feFuncA slope=0 intercept=1: el ruido de alfa solo velaba; con alfa fija
+         la fuerza la controla únicamente la opacidad de la capa. */
+    .grain{
+      opacity: var(--grain-opacity);
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='1' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='3' intercept='-1'/%3E%3CfeFuncG type='linear' slope='3' intercept='-1'/%3E%3CfeFuncB type='linear' slope='3' intercept='-1'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+    }
+
+    /* Ruido sesgado a oscuro (media 0.075) con granos claros sueltos: así el
+       screen mete grano en el negro sin lavarlo — #121212 sube solo a ~20. */
+    .grain-blacks{
+      opacity: var(--grain-lift);
+      mix-blend-mode: screen;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='b' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='1' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='8' intercept='-4.5'/%3E%3CfeFuncG type='linear' slope='8' intercept='-4.5'/%3E%3CfeFuncB type='linear' slope='8' intercept='-4.5'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23b)'/%3E%3C/svg%3E");
+
+      /* Desfasada respecto a la otra capa para que no parezca un patrón doble */
+      animation-direction: reverse;
+      animation-duration: calc(var(--grain-speed) * 1.4);
+    }
+
+    @keyframes grain-shift{
+      0%   { transform: translate3d(0, 0, 0); }
+      10%  { transform: translate3d(-2%, -4%, 0); }
+      20%  { transform: translate3d(-6%, 2%, 0); }
+      30%  { transform: translate3d(4%, -6%, 0); }
+      40%  { transform: translate3d(-2%, 6%, 0); }
+      50%  { transform: translate3d(-6%, 4%, 0); }
+      60%  { transform: translate3d(4%, 0, 0); }
+      70%  { transform: translate3d(-4%, -4%, 0); }
+      80%  { transform: translate3d(2%, 6%, 0); }
+      90%  { transform: translate3d(-6%, -2%, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .grain, .grain-blacks{ animation: none; }
+    }
+
     @media (max-width: 600px){
       :root{ --page-pad:18px; --logo-width:160px; --gap:22px; --wide-aspect: 4 / 3; --header-height: 80px; }
       .tile.wide{ grid-column: span 1; }
@@ -371,6 +441,9 @@
     <div class="caption" id="lbCaption"></div>
   </div>
 </div>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="grain-blacks" aria-hidden="true"></div>
 
 <script>
   const MAX_PHOTOS = 40;
