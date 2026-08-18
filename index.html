@@ -51,9 +51,9 @@
       --wide-aspect: 16 / 9;
 
       /* --- GRANO DE PELÍCULA --- */
-      --grain-opacity: .08;  /* grano sobre fotos y medios tonos */
-      --grain-lift: .05;     /* grano en los negros de la página */
-      --grain-tile: 200px;   /* más pequeño = grano más fino */
+      --grain-opacity: .06;  /* grano sobre fotos y medios tonos */
+      --grain-lift: .035;    /* grano en los negros de la página */
+      --grain-tile: 200px;   /* = 200 / densidad de pantalla; ver @media abajo */
       --grain-speed: .6s;    /* parpadeo del grano (0 = estático) */
     }
 
@@ -325,21 +325,32 @@
     }
 
     @keyframes grain-shift{
-      0%   { transform: translate3d(0, 0, 0); }
-      10%  { transform: translate3d(-2%, -4%, 0); }
-      20%  { transform: translate3d(-6%, 2%, 0); }
-      30%  { transform: translate3d(4%, -6%, 0); }
-      40%  { transform: translate3d(-2%, 6%, 0); }
-      50%  { transform: translate3d(-6%, 4%, 0); }
-      60%  { transform: translate3d(4%, 0, 0); }
-      70%  { transform: translate3d(-4%, -4%, 0); }
-      80%  { transform: translate3d(2%, 6%, 0); }
-      90%  { transform: translate3d(-6%, -2%, 0); }
-      100% { transform: translate3d(0, 0, 0); }
+      0%   { transform: translate3d(0px, 0px, 0); }
+      10%  { transform: translate3d(-3px, -7px, 0); }
+      20%  { transform: translate3d(-8px, 3px, 0); }
+      30%  { transform: translate3d(5px, -9px, 0); }
+      40%  { transform: translate3d(-2px, 8px, 0); }
+      50%  { transform: translate3d(-9px, 5px, 0); }
+      60%  { transform: translate3d(6px, 0px, 0); }
+      70%  { transform: translate3d(-5px, -6px, 0); }
+      80%  { transform: translate3d(3px, 9px, 0); }
+      90%  { transform: translate3d(-7px, -3px, 0); }
+      100% { transform: translate3d(0px, 0px, 0); }
     }
 
     @media (prefers-reduced-motion: reduce){
       .grain, .grain-blacks{ animation: none; }
+    }
+
+    /* El grano debe medir un pixel FISICO, no uno logico: si el mosaico se
+       escala, feTurbulence produce manchas de 2 px que enmascaran el detalle
+       fino de las fotos. Medido: finura 0.99 a 200px en dpr2 frente a 1.45
+       a 100px (el techo del ruido puro por pixel es 1.41). */
+    @media (min-resolution: 2dppx){
+      :root{ --grain-tile: 100px; }
+    }
+    @media (min-resolution: 3dppx){
+      :root{ --grain-tile: 67px; }
     }
 
     @media (max-width: 600px){
